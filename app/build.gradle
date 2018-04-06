@@ -26,5 +26,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.android.support:support-compat:26.1.0'
+    compile "com.android.support:support-v4:26.0.+"
+    compile 'com.android.support:design:26.1.0'
 
 }
