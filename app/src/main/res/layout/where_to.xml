@@ -86,6 +86,21 @@
                 android:textColorHighlight="@color/colorPrimary"
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@+id/title2_tv" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                app:layout_constraintTop_toBottomOf="@id/whereTo_et"
+                android:textSize="50sp"
+                android:id="@+id/latitude"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+
+                app:layout_constraintTop_toBottomOf="@id/latitude"
+                android:textSize="50sp"
+                android:id="@+id/longitude"/>
 
             <!--floating action button-->
             <android.support.design.widget.FloatingActionButton
