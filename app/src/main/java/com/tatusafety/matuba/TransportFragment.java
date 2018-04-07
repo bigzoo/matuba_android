@@ -40,7 +40,12 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
-                MDToast mdToast = MDToast.makeText(getContext(), "Searching....", MDToast.LENGTH_SHORT ,MDToast.TYPE_INFO );
+
+                ReportsFragment nextFrag = new ReportsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.start_page_content, nextFrag, "findThisFragment")
+                        .commit();
+                MDToast mdToast = MDToast.makeText(getContext(), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
                 mdToast.show();
                 break;
         }
