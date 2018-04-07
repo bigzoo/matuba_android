@@ -13,6 +13,6 @@ import android.view.ViewGroup;
 public class ReportsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.reporting_fragment, container, false);
+        return inflater.inflate(R.layout.activity_report, container, false);
     }
 }
