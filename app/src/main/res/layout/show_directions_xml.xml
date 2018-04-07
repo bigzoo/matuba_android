@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/eta_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="E.T.A"
+            android:textStyle="bold" />
+
+        <!--  Name Label -->
+        <TextView
+            android:id="@+id/eta_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="ETA"
+            android:inputType="textCapWords" />
+
+        <!-- Total Distance Label -->
+        <TextView
+            android:id="@+id/total_distance_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="DISTANCE"
+            android:inputType="textEmailAddress"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/total_distance_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="Distance"
+            android:inputType="textEmailAddress" />
+
+        <!-- Total Duration Label -->
+        <TextView
+            android:id="@+id/duration_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="DURATION"
+            android:inputType="textEmailAddress"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/duration_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="Duration"
+            android:inputType="textEmailAddress" />
+        <!-- Total Duration Label -->
+        <TextView
+            android:id="@+id/fare_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="FARE"
+            android:inputType="textEmailAddress"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/fare_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="Fare"
+            android:inputType="textEmailAddress" />
+
+
+    </LinearLayout>
+</ScrollView>
