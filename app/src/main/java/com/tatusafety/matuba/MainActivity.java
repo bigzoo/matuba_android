@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import com.tatusafety.matuba.adapter.PagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
