@@ -1,8 +1,11 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.tatusafety.matuba.ReportsFragment;
+import com.tatusafety.matuba.TransportFragment;
 
 /**
  * Created by incentro on 4/7/2018.
