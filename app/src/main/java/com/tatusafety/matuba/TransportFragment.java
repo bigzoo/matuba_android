@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.valdesekamdem.library.mdtoast.MDToast;
+
 /**
  * Created by incentro on 4/7/2018.
  */
@@ -30,6 +32,7 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
         super.onViewCreated(view, savedInstanceState);
         whereTo = view.findViewById(R.id.whereTo_et);
         fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(this);
     }
 
     //when you click the floating action button
@@ -37,7 +40,8 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
-
+                MDToast mdToast = MDToast.makeText(getContext(), "Searching....", MDToast.LENGTH_SHORT ,MDToast.TYPE_INFO );
+                mdToast.show();
                 break;
         }
 
