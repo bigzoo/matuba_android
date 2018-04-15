@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tatusafety.matuba.adapter.MoviesAdapter;
+import com.tatusafety.matuba.model.Journey;
+import com.tatusafety.matuba.model.JourneyResponse;
 import com.tatusafety.matuba.model.Movie;
 import com.tatusafety.matuba.model.MovieResponse;
 import com.tatusafety.matuba.rest.ApiClient;
@@ -44,18 +46,18 @@ public class MovieActivity extends AppCompatActivity {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<MovieResponse> call = apiService.getTopRatedMovies(From_A,To_A,From_B,To_B);
-        call.enqueue(new Callback<MovieResponse>() {
+        Call<JourneyResponse> call = apiService.getJourneys(From_A,To_A,From_B,To_B);
+        call.enqueue(new Callback<JourneyResponse>() {
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+            public void onResponse(Call<JourneyResponse> call, Response<JourneyResponse> response) {
                 int statusCode = response.code();
-                List<Movie> movies = response.body().getResults();
+                List<Journey> movies = response.body().getLegs();
                 Log.d("Here are the movies", String.valueOf(movies));
-                recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
+//                recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
             }
 
             @Override
-            public void onFailure(Call<MovieResponse>call, Throwable t) {
+            public void onFailure(Call<JourneyResponse>call, Throwable t) {
                 // Log error here since request failed
                 Log.e(TAG, t.toString());
             }

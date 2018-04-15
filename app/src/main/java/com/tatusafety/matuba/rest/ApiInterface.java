@@ -5,7 +5,8 @@ package com.tatusafety.matuba.rest;
  */
 
 
-import com.tatusafety.matuba.model.MovieResponse;
+import com.tatusafety.matuba.model.Journey;
+import com.tatusafety.matuba.model.JourneyResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,11 +16,10 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
     @GET("api/journeys")
-    Call<MovieResponse> getTopRatedMovies(@Query("from_lat") String From_A,
-                                          @Query("from_long") String To_A,
-                                          @Query("to_lat") String From_B,
-                                          @Query("to_long") String To_B);
+    Call<JourneyResponse> getJourneys(@Query("from_lat") String From_A,
+                                      @Query("from_long") String To_A,
+                                      @Query("to_lat") String From_B,
+                                      @Query("to_long") String To_B);
 
-    @GET("movie/{id}")
-    Call<MovieResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
+
 }
