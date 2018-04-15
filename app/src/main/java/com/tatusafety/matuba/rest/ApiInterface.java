@@ -14,8 +14,11 @@ import retrofit2.http.Query;
 
 
 public interface ApiInterface {
-    @GET("movie/top_rated")
-    Call<MovieResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+    @GET("api/journeys")
+    Call<MovieResponse> getTopRatedMovies(@Query("from_lat") String From_A,
+                                          @Query("from_long") String To_A,
+                                          @Query("to_lat") String From_B,
+                                          @Query("to_long") String To_B);
 
     @GET("movie/{id}")
     Call<MovieResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
