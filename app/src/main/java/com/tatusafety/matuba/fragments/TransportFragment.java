@@ -1,4 +1,4 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.fragments;
 
 
 import android.Manifest;
@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tatusafety.matuba.R;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 /**
@@ -96,7 +97,6 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
             return false;
         } else {
             return true;
-
         }
     }
 

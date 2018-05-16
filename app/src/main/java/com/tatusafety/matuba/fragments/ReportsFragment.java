@@ -1,10 +1,12 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.tatusafety.matuba.R;
 
 /**
  * Created by incentro on 4/7/2018.

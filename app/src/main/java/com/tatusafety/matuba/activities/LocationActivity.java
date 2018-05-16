@@ -43,8 +43,8 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.where_to);
 
-        _latitude = (TextView) findViewById(R.id.latitude);
-        _longitude = (TextView) findViewById(R.id.longitude);
+        _latitude = findViewById(R.id.latitude);
+        _longitude = findViewById(R.id.longitude);
 
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -55,8 +55,10 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
+            Log.e("Tag","****************************** mGoogleApiClient != null ");
         } else
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
+            Log.e("Tag","****************************** mGoogleApiClient == null ");
 
     }
 
@@ -69,6 +71,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.e("Tag","****************************** get onconnected");
         settingRequest();
     }
 
@@ -118,8 +121,10 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
                         getLocation();
+                        Log.e("Tag","****************************** get SUCCESS");
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Log.e("Tag","****************************** get RESOLUTION_REQUIRED");
                         // Location settings are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
@@ -131,6 +136,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.e("Tag","****************************** get SETTINGS_CHANGE_UNAVAILABLE");
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
                         break;
@@ -175,14 +181,15 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             /*Getting the location after aquiring location service*/
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
-
+            Log.e("Tag","****************************** get Location");
             if (mLastLocation != null) {
+                Log.e("Tag","****************************** MastLocation is not null");
                 _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
                 _longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
             } else {
                 /*if there is no last known location. Which means the device has no data for the loction currently.
-                * So we will get the current location.
-                * For this we'll implement Location Listener and override onLocationChanged*/
+                 * So we will get the current location.
+                 * For this we'll implement Location Listener and override onLocationChanged*/
                 Log.i("Current Location", "No data for location found");
 
                 if (!mGoogleApiClient.isConnected())
@@ -197,7 +204,6 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-
         _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
         _longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
     }

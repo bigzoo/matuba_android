@@ -5,28 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:elevation="6dp"-->
-    <!--android:minHeight="?attr/actionBarSize"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
-    <!--<android.support.design.widget.TabLayout-->
-    <!--android:id="@+id/tab_layout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/toolbar"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:elevation="6dp"-->
-    <!--android:minHeight="?attr/actionBarSize"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+    tools:context=".activities.MainActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
@@ -92,12 +71,13 @@
                 android:textColor="@color/blue"
                 app:layout_constraintTop_toBottomOf="@id/whereTo_et"
                 android:textSize="50sp"
+                tools:text="Latitufe"
                 android:id="@+id/latitude"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
-
+                tools:text="Longitude"
                 app:layout_constraintTop_toBottomOf="@id/latitude"
                 android:textSize="50sp"
                 android:id="@+id/longitude"/>
