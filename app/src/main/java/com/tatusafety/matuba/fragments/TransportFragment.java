@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tatusafety.matuba.LocationActivity;
 import com.tatusafety.matuba.R;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
