@@ -1,4 +1,4 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -29,23 +27,25 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.tatusafety.matuba.R;
 
 public class LocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    TextView _latitude, _longitude;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    LocationRequest mLocationRequest;
+    TextView mLatitudeTv, mLongitudeTv;
 
+    GoogleApiClient mGoogleApiClient;
+
+    Location mLastLocation;
+
+    LocationRequest mLocationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.where_to);
 
-        _latitude = (TextView) findViewById(R.id.latitude);
-        _longitude = (TextView) findViewById(R.id.longitude);
-
+        mLatitudeTv = findViewById(R.id.latitude);
+        mLongitudeTv = findViewById(R.id.longitude);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -114,15 +114,20 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                 final Status status = result.getStatus();
                 final LocationSettingsStates state = result.getLocationSettingsStates();
                 switch (status.getStatusCode()) {
+
+                    // All location settings are satisfied. The client can
                     case LocationSettingsStatusCodes.SUCCESS:
-                        // All location settings are satisfied. The client can
+
                         // initialize location requests here.
                         getLocation();
+
                         break;
+
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
                         try {
+
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
                             status.startResolutionForResult(LocationActivity.this, 1000);
@@ -131,6 +136,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
                         break;
@@ -177,12 +183,12 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     mGoogleApiClient);
 
             if (mLastLocation != null) {
-                _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
-                _longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+                mLatitudeTv.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
+                mLongitudeTv.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
             } else {
                 /*if there is no last known location. Which means the device has no data for the loction currently.
-                * So we will get the current location.
-                * For this we'll implement Location Listener and override onLocationChanged*/
+                 * So we will get the current location.
+                 * For this we'll implement Location Listener and override onLocationChanged*/
                 Log.i("Current Location", "No data for location found");
 
                 if (!mGoogleApiClient.isConnected())
@@ -198,7 +204,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     public void onLocationChanged(Location location) {
         mLastLocation = location;
 
-        _latitude.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
-        _longitude.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+        mLatitudeTv.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
+        mLongitudeTv.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
     }
 }

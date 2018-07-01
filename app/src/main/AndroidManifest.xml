@@ -19,7 +19,7 @@
         <activity android:name=".MainActivity">
 
         </activity>
-        <activity android:name=".LocationActivity">
+        <activity android:name=".activities.LocationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

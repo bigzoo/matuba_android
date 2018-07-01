@@ -1,4 +1,4 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.fragments;
 
 /**
  * Created by ADMIN on 4/8/2018.
@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.tatusafety.matuba.R;
 
 import java.util.Calendar;
 
