@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tatusafety.matuba.R;
+import com.tatusafety.matuba.activities.LocationActivity;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 /**
@@ -51,7 +53,7 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.where_to, container, false);
+        return inflater.inflate(R.layout.transport_fragment, container, false);
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -176,13 +178,16 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
+//
+//                ReportsFragment nextFrag = new ReportsFragment();
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.start_page_content, nextFrag, "findThisFragment")
+//                        .commit();
 
-                ReportsFragment nextFrag = new ReportsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.start_page_content, nextFrag, "findThisFragment")
-                        .commit();
                 MDToast mdToast = MDToast.makeText(getContext(), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
                 mdToast.show();
+                Intent intent = new Intent(this.getActivity(), LocationActivity.class);
+                startActivity(intent);
                 break;
         }
 
