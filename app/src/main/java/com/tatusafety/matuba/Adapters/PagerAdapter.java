@@ -1,4 +1,4 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

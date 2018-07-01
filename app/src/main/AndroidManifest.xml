@@ -16,7 +16,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,6 +27,15 @@
         <activity android:name=".activities.LocationActivity">
 
         </activity>
+        <receiver android:name=".ActivityReceiver" />
+
+        <!-- You need to acquire these from their website (http://developer.pathsense.com) -->
+        <meta-data
+            android:name="com.pathsense.android.sdk.CLIENT_ID"
+            android:value="YOUR_CLIENT_ID" />
+        <meta-data
+            android:name="com.pathsense.android.sdk.API_KEY"
+            android:value="YOUR_API_KEY" />
     </application>
 
 </manifest>
