@@ -1,10 +1,10 @@
-package com.tatusafety.matuba;
-
+package com.tatusafety.matuba.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -25,38 +25,57 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tatusafety.matuba.R;
+import com.tatusafety.matuba.activities.LocationActivity;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 /**
- * Created by incentro on 4/7/2018.
+ * Created by Kilasi on 4/7/2018.
  */
 
 public class TransportFragment extends Fragment implements View.OnClickListener {
-    private EditText whereTo;
-    private FloatingActionButton fab;
-    TextView lat, longit;
-    double latitude,longitude;
-    LocationManager locManager;
+
+    private EditText mWhereToEditText;
+
+    private FloatingActionButton mFab;
+
+    private TextView mLatitudeTv, mLongitudeTv;
+
+    double latitude, longitude;
+
+    private LocationManager mLocManager;
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private String provider;
+
+    private String mProvider;
+
+    private String TAG;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.where_to, container, false);
-
-
+        return inflater.inflate(R.layout.transport_fragment, container, false);
     }
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        whereTo = view.findViewById(R.id.whereTo_et);
-        fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-        longit = view.findViewById(R.id.longitude);
-        lat = view.findViewById(R.id.latitude);
+
+        final String TAG = this.getClass().getSimpleName();
+
+        mWhereToEditText = view.findViewById(R.id.whereTo_et);
+
+        mFab = view.findViewById(R.id.fab);
+
+        mFab.setOnClickListener(this);
+
+        mLongitudeTv = view.findViewById(R.id.longitude);
+
+        mLatitudeTv = view.findViewById(R.id.latitude);
+
         checkLocationPermission();
-        locManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        provider = locManager.getBestProvider(new Criteria(), false);
+
+        mLocManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+
+        mProvider = mLocManager.getBestProvider(new Criteria(), false);
     }
 
     public boolean checkLocationPermission() {
@@ -68,9 +87,6 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(getContext())
                         .setTitle("I need it")
                         .setMessage("Give it to me")
@@ -85,8 +101,6 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
                         })
                         .create()
                         .show();
-
-
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(getActivity(),
@@ -96,15 +110,14 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
             return false;
         } else {
             return true;
-
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
+
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -116,19 +129,18 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-
-                        locManager.requestLocationUpdates(provider, 400, 1, new LocationListener() {
+                        mLocManager.requestLocationUpdates(mProvider, 400, 1, new LocationListener() {
 
                             @Override
                             public void onLocationChanged(Location location) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
-                                longit.append(String.format("%.2f", location.getLongitude()));
-                                lat.append(String.format("%.2f", location.getLatitude()));
-                                longit.setText((int)longitude);
-                                lat.setText((int)latitude);
-
-                                Log.d("LOGLong", String.valueOf(longitude));
+                                mLongitudeTv.append(String.format("%.2f", location.getLongitude()));
+                                mLatitudeTv.append(String.format("%.2f", location.getLatitude()));
+                                mLongitudeTv.setText((int) longitude);
+                                mLatitudeTv.setText((int) latitude);
+                                Log.e(TAG, "**********************Longitude " + String.valueOf(longitude));
+                                Log.e(TAG, "**********************Latitude " + String.valueOf(latitude));
                             }
 
                             @Override
@@ -151,8 +163,7 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
                     }
 
                 } else {
-
-                   Toast.makeText(getContext(),"noo",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "noo", Toast.LENGTH_SHORT).show();
 
                 }
                 return;
@@ -167,13 +178,16 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
+//
+//                ReportsFragment nextFrag = new ReportsFragment();
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.start_page_content, nextFrag, "findThisFragment")
+//                        .commit();
 
-                ReportsFragment nextFrag = new ReportsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.start_page_content, nextFrag, "findThisFragment")
-                        .commit();
                 MDToast mdToast = MDToast.makeText(getContext(), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
                 mdToast.show();
+                Intent intent = new Intent(this.getActivity(), LocationActivity.class);
+                startActivity(intent);
                 break;
         }
 

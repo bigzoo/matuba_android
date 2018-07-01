@@ -4,35 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:elevation="6dp"-->
-    <!--android:minHeight="?attr/actionBarSize"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
-    <!--<android.support.design.widget.TabLayout-->
-    <!--android:id="@+id/tab_layout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/toolbar"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:elevation="6dp"-->
-    <!--android:minHeight="?attr/actionBarSize"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/tab_layout"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -56,23 +33,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-
-            <TextView
-                android:id="@+id/title2_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text=""
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="Vergeten" />
             <!--where to edit text-->
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/whereTo_et"
@@ -85,22 +45,25 @@
                 android:text="Where To?"
                 android:textColorHighlight="@color/colorPrimary"
                 android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/title2_tv" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/blue"
-                app:layout_constraintTop_toBottomOf="@id/whereTo_et"
-                android:textSize="50sp"
-                android:id="@+id/latitude"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/blue"
+                app:layout_constraintTop_toBottomOf="parent" />
 
+            <TextView
+                android:id="@+id/latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/whereTo_et"
+                tools:text="Latitude" />
+
+            <TextView
+                android:id="@+id/longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="20sp"
                 app:layout_constraintTop_toBottomOf="@id/latitude"
-                android:textSize="50sp"
-                android:id="@+id/longitude"/>
+                tools:text="Longitude" />
 
             <!--floating action button-->
             <android.support.design.widget.FloatingActionButton
@@ -111,6 +74,7 @@
                 android:layout_margin="16dp"
                 android:background="@color/blue"
                 android:backgroundTint="@color/darkBlue"
+                android:src="@drawable/ic_check_circle_white_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
