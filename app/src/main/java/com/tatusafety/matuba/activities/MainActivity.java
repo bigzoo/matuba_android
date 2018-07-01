@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         if (!TextUtils.isEmpty(response)) {
                             parseLoginResponse(response);
                         } else if (error != null) {
-                            Log.e(TAG, "Error: " + error.toString());
+                            Log.e(TAG, "Error: " + response.toString());
                         }
                     }
                 });

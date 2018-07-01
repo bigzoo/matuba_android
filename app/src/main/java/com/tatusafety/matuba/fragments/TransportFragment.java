@@ -326,8 +326,8 @@ public class TransportFragment extends Fragment implements View.OnClickListener,
             Log.e("Tag","****************************** get Location");
             if (mLastLocation != null) {
                 Log.e("Tag","****************************** MastLocation is not null");
-                lat.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
-                longit.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+                lat.setText("Latitudes: " + String.valueOf(mLastLocation.getLatitude()));
+                longit.setText("Longitudes: " + String.valueOf(mLastLocation.getLongitude()));
             } else {
                 /*if there is no last known location. Which means the device has no data for the loction currently.
                  * So we will get the current location.
