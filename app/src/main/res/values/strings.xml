@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Matuba</string>
+    <string name="Latitude">Latitude:</string>
+    <string name="Longitude">Longitude:</string>
 </resources>

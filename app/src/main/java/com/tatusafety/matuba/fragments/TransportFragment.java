@@ -1,6 +1,5 @@
 package com.tatusafety.matuba.fragments;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,7 +28,7 @@ import com.tatusafety.matuba.R;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 /**
- * Created by incentro on 4/7/2018.
+ * Created by Kilasi on 4/7/2018.
  */
 
 public class TransportFragment extends Fragment implements View.OnClickListener {
@@ -48,7 +47,7 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
 
     private String mProvider;
 
-    private  String TAG;
+    private String TAG;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +57,7 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        public  final String TAG = this.class();
+        final String TAG = this.getClass().getSimpleName();
 
         mWhereToEditText = view.findViewById(R.id.whereTo_et);
 
@@ -138,7 +137,8 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
                                 mLatitudeTv.append(String.format("%.2f", location.getLatitude()));
                                 mLongitudeTv.setText((int) longitude);
                                 mLatitudeTv.setText((int) latitude);
-                                Log.e("LOGLong", String.valueOf(longitude));
+                                Log.e(TAG, "**********************Longitude " + String.valueOf(longitude));
+                                Log.e(TAG, "**********************Latitude " + String.valueOf(latitude));
                             }
 
                             @Override
@@ -161,7 +161,6 @@ public class TransportFragment extends Fragment implements View.OnClickListener 
                     }
 
                 } else {
-
                     Toast.makeText(getContext(), "noo", Toast.LENGTH_SHORT).show();
 
                 }

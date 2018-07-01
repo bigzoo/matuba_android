@@ -38,11 +38,14 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     Location mLastLocation;
 
     LocationRequest mLocationRequest;
+    private String TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.where_to);
+
+        final String TAG = this.getClass().getSimpleName();
 
         mLatitudeTv = findViewById(R.id.latitude);
         mLongitudeTv = findViewById(R.id.longitude);
@@ -57,7 +60,6 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             mGoogleApiClient.connect();
         } else
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
-
     }
 
     /*Ending the updates for the location service*/
@@ -88,7 +90,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                 e.printStackTrace();
             }
         } else {
-            Log.i("Current Location", "Location services connection failed with code " + connectionResult.getErrorCode());
+            Log.e(TAG, "****************Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
 
@@ -183,13 +185,13 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
                     mGoogleApiClient);
 
             if (mLastLocation != null) {
-                mLatitudeTv.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
-                mLongitudeTv.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+                mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
+                mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
             } else {
                 /*if there is no last known location. Which means the device has no data for the loction currently.
                  * So we will get the current location.
                  * For this we'll implement Location Listener and override onLocationChanged*/
-                Log.i("Current Location", "No data for location found");
+                Log.e(TAG, "****************No data for location found");
 
                 if (!mGoogleApiClient.isConnected())
                     mGoogleApiClient.connect();
@@ -203,8 +205,7 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-
-        mLatitudeTv.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
-        mLongitudeTv.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
+        mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
+        mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
     }
 }
