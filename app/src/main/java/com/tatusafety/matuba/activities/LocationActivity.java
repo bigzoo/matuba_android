@@ -2,13 +2,17 @@ package com.tatusafety.matuba.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +31,9 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
+import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
+import com.tatusafety.matuba.ActivityReceiver;
 import com.tatusafety.matuba.R;
 
 public class LocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -38,12 +45,19 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     Location mLastLocation;
 
     LocationRequest mLocationRequest;
+
     private String TAG;
+
+    private PathsenseLocationProviderApi pathsenseLocationProviderApi;
+    private LocalBroadcastManager localBroadcastManager;
+    private BroadcastReceiver localActivityReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.where_to);
+
+        pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
 
         final String TAG = this.getClass().getSimpleName();
 
@@ -60,7 +74,20 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
             mGoogleApiClient.connect();
         } else
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
-    }
+
+        //This just gets the activity intent from the ActivityReceiver class
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localActivityReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //The detectedActivities object is passed as a serializable
+                PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) intent.getSerializableExtra("ps");
+                TextView textView = findViewById(R.id.activitiText);
+                textView.setText(detectedActivities.getMostProbableActivity().getDetectedActivity().name());
+            }
+        };
+
+}
 
     /*Ending the updates for the location service*/
     @Override
@@ -207,5 +234,31 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         mLastLocation = location;
         mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
         mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Register local broadcast receiver
+        localBroadcastManager.registerReceiver(localActivityReceiver, new IntentFilter("activity"));
+
+        //This gives an update everytime it receives one, even if it was the same as the last update
+        pathsenseLocationProviderApi.requestActivityUpdates(ActivityReceiver.class);
+
+//        This gives updates only when it changes (ON_FOOT -> IN_VEHICLE for example)
+//        pathsenseLocationProviderApi.requestActivityChanges(ActivityReceiver.class);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        pathsenseLocationProviderApi.removeActivityUpdates();
+
+//        pathsenseLocationProviderApi.removeActivityChanges();
+
+        //Unregister local receiver
+        localBroadcastManager.unregisterReceiver(localActivityReceiver);
     }
 }

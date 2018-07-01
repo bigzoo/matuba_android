@@ -1,12 +1,18 @@
 package com.tatusafety.matuba;
 
-import android.content.BroadcastReceiver;
+
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
-public class ActivityReceiver extends BroadcastReceiver {
+import com.pathsense.android.sdk.location.PathsenseActivityRecognitionReceiver;
+import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
+
+public class ActivityReceiver extends PathsenseActivityRecognitionReceiver {
+
     @Override
-    public void onReceive(Context context, Intent intent) {
-
+    protected void onDetectedActivities(Context context, PathsenseDetectedActivities pathsenseDetectedActivities) {
+        Intent intent = new Intent("activity").putExtra("ps", pathsenseDetectedActivities);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
