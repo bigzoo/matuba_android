@@ -72,22 +72,35 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
-        } else
+        } else {
             Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
+        }
+
 
         //This just gets the activity intent from the ActivityReceiver class
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        accessActivityReceiver(LocationActivity.this);
+
+    }
+
+    public void accessActivityReceiver(Activity activity) {
+        localBroadcastManager = LocalBroadcastManager.getInstance(activity);
         localActivityReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //The detectedActivities object is passed as a serializable
                 PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) intent.getSerializableExtra("ps");
                 TextView textView = findViewById(R.id.activitiText);
-                textView.setText(detectedActivities.getMostProbableActivity().getDetectedActivity().name());
+                if (detectedActivities != null) {
+                    String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
+                    textView.setText(detectedActivity);
+                    if (!detectedActivities.isStationary()) {
+                        Log.e(TAG, "******************* detectedActivity " + detectedActivity);
+                    }
+                }
             }
         };
+    }
 
-}
 
     /*Ending the updates for the location service*/
     @Override
@@ -124,16 +137,17 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
     /*Method to get the enable location settings dialog*/
     @SuppressLint("RestrictedApi")
     public void settingRequest() {
+        Log.e(TAG, "Setting request**************");
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);    // 10 seconds, in milliseconds
         mLocationRequest.setFastestInterval(1000);   // 1 second, in milliseconds
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
 
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+        PendingResult<LocationSettingsResult> result = LocationServices
+                .SettingsApi
+                .checkLocationSettings(mGoogleApiClient,
                         builder.build());
 
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
