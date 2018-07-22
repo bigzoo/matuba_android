@@ -1,98 +1,69 @@
 package com.tatusafety.matuba.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.ActivityReceiver;
 import com.tatusafety.matuba.R;
 
-public class LocationActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
-    TextView mLatitudeTv, mLongitudeTv;
-
-    GoogleApiClient mGoogleApiClient;
-
-    Location mLastLocation;
-
-    LocationRequest mLocationRequest;
+public class PathSenseActivity extends AppCompatActivity  {
 
     private String TAG;
 
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
+    private FrameLayout mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.where_to);
+        setContentView(R.layout.transport_fragment);
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
 
         final String TAG = this.getClass().getSimpleName();
-
-        mLatitudeTv = findViewById(R.id.latitude);
-        mLongitudeTv = findViewById(R.id.longitude);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        } else {
-            Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
-        }
-
+        mProgressBar = findViewById(R.id.progressBar);
 
         //This just gets the activity intent from the ActivityReceiver class
-        accessActivityReceiver(LocationActivity.this);
+        accessActivityReceiver(PathSenseActivity.this);
 
     }
 
     public void accessActivityReceiver(Activity activity) {
+
         localBroadcastManager = LocalBroadcastManager.getInstance(activity);
+
         localActivityReceiver = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
+
                 //The detectedActivities object is passed as a serializable
                 PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) intent.getSerializableExtra("ps");
+
                 TextView textView = findViewById(R.id.activitiText);
+
                 if (detectedActivities != null) {
+                    mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
-                    textView.setText(detectedActivity);
+                    textView.setText("You are "  + detectedActivity);
+
                     if (!detectedActivities.isStationary()) {
                         Log.e(TAG, "******************* detectedActivity " + detectedActivity);
                     }
@@ -101,154 +72,6 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
         };
     }
 
-
-    /*Ending the updates for the location service*/
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        settingRequest();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(this, "Connection Suspended!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, "Connection Failed!", Toast.LENGTH_SHORT).show();
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(this, 90000);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.e(TAG, "****************Location services connection failed with code " + connectionResult.getErrorCode());
-        }
-    }
-
-    /*Method to get the enable location settings dialog*/
-    @SuppressLint("RestrictedApi")
-    public void settingRequest() {
-        Log.e(TAG, "Setting request**************");
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);    // 10 seconds, in milliseconds
-        mLocationRequest.setFastestInterval(1000);   // 1 second, in milliseconds
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
-
-        PendingResult<LocationSettingsResult> result = LocationServices
-                .SettingsApi
-                .checkLocationSettings(mGoogleApiClient,
-                        builder.build());
-
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-
-            @Override
-            public void onResult(@NonNull LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates state = result.getLocationSettingsStates();
-                switch (status.getStatusCode()) {
-
-                    // All location settings are satisfied. The client can
-                    case LocationSettingsStatusCodes.SUCCESS:
-
-                        // initialize location requests here.
-                        getLocation();
-
-                        break;
-
-                    // Location settings are not satisfied, but this can be fixed
-                    // by showing the user a dialog.
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        try {
-
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
-                            status.startResolutionForResult(LocationActivity.this, 1000);
-                        } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
-                        break;
-                }
-            }
-
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
-        switch (requestCode) {
-            case 1000:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        // All required changes were successfully made
-                        getLocation();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-                        Toast.makeText(this, "Location Service not Enabled", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-        }
-    }
-
-    public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        } else {
-            /*Getting the location after aquiring location service*/
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-
-            if (mLastLocation != null) {
-                mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
-                mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
-            } else {
-                /*if there is no last known location. Which means the device has no data for the loction currently.
-                 * So we will get the current location.
-                 * For this we'll implement Location Listener and override onLocationChanged*/
-                Log.e(TAG, "****************No data for location found");
-
-                if (!mGoogleApiClient.isConnected())
-                    mGoogleApiClient.connect();
-
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, LocationActivity.this);
-            }
-        }
-    }
-
-    /*When Location changes, this method get called. */
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
-        mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
-    }
 
     @Override
     protected void onResume() {

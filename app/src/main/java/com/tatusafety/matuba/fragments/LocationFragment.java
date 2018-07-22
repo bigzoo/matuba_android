@@ -1,12 +1,8 @@
 package com.tatusafety.matuba.fragments;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -19,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,13 +28,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
-import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
-import com.tatusafety.matuba.ActivityReceiver;
 import com.tatusafety.matuba.R;
-import com.tatusafety.matuba.activities.LocationActivity;
+import com.tatusafety.matuba.activities.PathSenseActivity;
 import com.tatusafety.matuba.activities.MainActivity;
-import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.util.Objects;
 
@@ -47,7 +38,7 @@ import java.util.Objects;
  * Created by Kilasi on 4/7/2018.
  */
 
-public class TransportFragment extends Fragment implements
+public class LocationFragment extends Fragment implements
         View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -57,7 +48,7 @@ public class TransportFragment extends Fragment implements
 
     private FloatingActionButton mFab;
 
-    private TextView mLatitudeTv, mLongitudeTv, mActivity;
+    private TextView mLatitudeTv, mLongitudeTv;
 
     double latitude, longitude;
 
@@ -73,22 +64,22 @@ public class TransportFragment extends Fragment implements
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
     private LocationRequest mLocationRequest;
-    LocationActivity locationActivity;
+    PathSenseActivity pathSenseActivity;
     private Location mLastLocation;
-    private PathsenseLocationProviderApi pathsenseLocationProviderApi;
 
-    public TransportFragment(){
+    public LocationFragment(){
 
     }
 
-    public static TransportFragment newInstance(boolean permissionGranted) {
+    public static LocationFragment newInstance(boolean permissionGranted) {
 
-        return new TransportFragment();
+        return new LocationFragment();
     }
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
 
     @Override
@@ -106,12 +97,11 @@ public class TransportFragment extends Fragment implements
         mFab = view.findViewById(R.id.fab);
 
         mFab.setOnClickListener(this);
-        locationActivity = new LocationActivity();
+        pathSenseActivity = new PathSenseActivity();
 
         mLongitudeTv = view.findViewById(R.id.longitude);
 
         mLatitudeTv = view.findViewById(R.id.latitude);
-        mActivity = view.findViewById(R.id.activitiText);
 
         mLocManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
 
@@ -125,9 +115,6 @@ public class TransportFragment extends Fragment implements
 
         mGoogleApiClient.connect();
 
-        //This just gets the activity intent from the ActivityReceiver class
-       accessActivityReceiver();
-
     }
 
     @Override
@@ -137,39 +124,12 @@ public class TransportFragment extends Fragment implements
 //                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
 //                mdToast.show();
                 // Fab goes to Location Activity
-                Intent intent = new Intent(this.getActivity(), LocationActivity.class);
+                Intent intent = new Intent(this.getActivity(), PathSenseActivity.class);
                 startActivity(intent);
                 break;
         }
 
     }
-    public void accessActivityReceiver() {
-
-        localBroadcastManager = LocalBroadcastManager.getInstance(Objects.requireNonNull(getContext()));
-
-        localActivityReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                //The detectedActivities object is passed as a serializable
-                PathsenseDetectedActivities detectedActivities = (PathsenseDetectedActivities) intent.getSerializableExtra("ps");
-
-                if (detectedActivities != null) {
-                    // get the  most probable activity in string format
-                    String detectedActivity = detectedActivities.getMostProbableActivity()
-                            .getDetectedActivity()
-                            .name();
-
-                    mActivity.setText(detectedActivity);
-
-                    if (!detectedActivities.isStationary()) {
-                        Log.e(TAG, "******************* detectedActivity " + detectedActivity);
-                    }
-                }
-            }
-        };
-    }
-
 
     /*Ending the updates for the location service*/
     @Override
@@ -246,29 +206,17 @@ public class TransportFragment extends Fragment implements
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        //Register local broadcast receiver
-        localBroadcastManager.registerReceiver(localActivityReceiver, new IntentFilter("activity"));
-
-        //This gives an update everytime it receives one, even if it was the same as the last update
-        pathsenseLocationProviderApi.requestActivityUpdates(ActivityReceiver.class);
-
-//        This gives updates only when it changes (ON_FOOT -> IN_VEHICLE for example)
-//        pathsenseLocationProviderApi.requestActivityChanges(ActivityReceiver.class);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onProviderEnabled(String provider) {
 
-        pathsenseLocationProviderApi.removeActivityUpdates();
-
-        pathsenseLocationProviderApi.removeActivityChanges();
-
-        //Unregister local receiver
-        localBroadcastManager.unregisterReceiver(localActivityReceiver);
     }
 
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
