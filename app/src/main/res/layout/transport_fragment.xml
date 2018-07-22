@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +10,8 @@
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/blue">
+        android:background="@color/blue"
+        tools:visibility="gone">
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -25,5 +27,16 @@
         android:textColor="@color/blue"
         android:textSize="40sp"
         tools:text="activityText" />
+
+    <com.github.anastr.speedviewlib.PointerSpeedometer
+        android:id="@+id/speedView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:sv_highSpeedColor="@color/colorWarning"
+        android:layout_below="@id/activitiText"
+        app:sv_backgroundCircleColor="@color/colorWarning"
+        app:sv_maxSpeed="180"
+        app:sv_minSpeed="0"
+        app:sv_pointerColor="@color/blue" />
 
 </RelativeLayout>

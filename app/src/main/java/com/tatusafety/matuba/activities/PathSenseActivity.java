@@ -5,17 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
+import com.github.anastr.speedviewlib.Gauge;
+import com.github.anastr.speedviewlib.PointerSpeedometer;
 import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.ActivityReceiver;
@@ -29,6 +27,7 @@ public class PathSenseActivity extends AppCompatActivity  {
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
     private FrameLayout mProgressBar;
+    private PointerSpeedometer speedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,7 @@ public class PathSenseActivity extends AppCompatActivity  {
 
         //This just gets the activity intent from the ActivityReceiver class
         accessActivityReceiver(PathSenseActivity.this);
+
 
     }
 
@@ -63,9 +63,16 @@ public class PathSenseActivity extends AppCompatActivity  {
                     mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
                     textView.setText("You are "  + detectedActivity);
+                    speedometer = findViewById(R.id.speedView);
+                    // move to 50 Km/h
+                    speedometer.speedTo(160,4000);
+                    speedometer.setSpeedTextPosition(PointerSpeedometer.Position.BOTTOM_CENTER);
+                    speedometer.setLowSpeedPercent(25);
+                    speedometer.setMediumSpeedPercent(75);
                 }
             }
         };
+
     }
 
 
