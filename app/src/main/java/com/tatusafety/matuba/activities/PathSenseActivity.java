@@ -63,10 +63,6 @@ public class PathSenseActivity extends AppCompatActivity  {
                     mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
                     textView.setText("You are "  + detectedActivity);
-
-                    if (!detectedActivities.isStationary()) {
-                        Log.e(TAG, "******************* detectedActivity " + detectedActivity);
-                    }
                 }
             }
         };
@@ -81,10 +77,10 @@ public class PathSenseActivity extends AppCompatActivity  {
         localBroadcastManager.registerReceiver(localActivityReceiver, new IntentFilter("activity"));
 
         //This gives an update everytime it receives one, even if it was the same as the last update
-        pathsenseLocationProviderApi.requestActivityUpdates(ActivityReceiver.class);
+//        pathsenseLocationProviderApi.requestActivityUpdates(ActivityReceiver.class);
 
 //        This gives updates only when it changes (ON_FOOT -> IN_VEHICLE for example)
-//        pathsenseLocationProviderApi.requestActivityChanges(ActivityReceiver.class);
+        pathsenseLocationProviderApi.requestActivityChanges(ActivityReceiver.class);
     }
 
     @Override
