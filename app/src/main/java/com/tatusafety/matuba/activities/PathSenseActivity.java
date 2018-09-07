@@ -42,6 +42,7 @@ public class PathSenseActivity extends AppCompatActivity  {
 
         //This just gets the activity intent from the ActivityReceiver class
         accessActivityReceiver(PathSenseActivity.this);
+        mProgressBar.setVisibility(View.VISIBLE);
 
     }
 
@@ -62,7 +63,7 @@ public class PathSenseActivity extends AppCompatActivity  {
                 if (detectedActivities != null) {
                     mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
-                    textView.setText("You are "  + detectedActivity);
+                    textView.setText("You are "  + detectedActivity.toLowerCase());
                 }
             }
         };
