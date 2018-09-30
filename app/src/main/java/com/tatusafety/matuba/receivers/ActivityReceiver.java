@@ -1,4 +1,4 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.receivers;
 
 
 import android.content.Context;

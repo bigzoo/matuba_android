@@ -9,6 +9,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +32,9 @@ import com.google.android.gms.location.LocationServices;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.activities.PathSenseActivity;
 import com.tatusafety.matuba.activities.MainActivity;
+import com.tatusafety.matuba.activities.SpeedActivity;
+import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
+import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.util.Objects;
 
@@ -43,32 +47,20 @@ public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
-
-    private EditText mWhereToEditText;
-
-    private FloatingActionButton mFab;
+    private String TAG = getClass().getSimpleName();
 
     private TextView mLatitudeTv, mLongitudeTv;
-
     double latitude, longitude;
-
-    private LocationManager mLocManager;
-
-    private static boolean mLocationPermissions;
-
-    private String mProvider;
-
-    private String TAG;
     private GoogleApiClient mGoogleApiClient;
+    LocationManager mLocationManager;
 
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
     private LocationRequest mLocationRequest;
     PathSenseActivity pathSenseActivity;
-    private Location mLastLocation;
+    private String mBestProvider;
 
-    public LocationFragment(){
-
+    public LocationFragment() {
     }
 
     public static LocationFragment newInstance(boolean permissionGranted) {
@@ -92,20 +84,20 @@ public class LocationFragment extends Fragment implements
 
         final String TAG = this.getClass().getSimpleName();
 
-        mWhereToEditText = view.findViewById(R.id.whereTo_et);
+        EditText whereToEditText = view.findViewById(R.id.whereTo_et);
 
-        mFab = view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
-        mFab.setOnClickListener(this);
+        fab.setOnClickListener(this);
         pathSenseActivity = new PathSenseActivity();
 
         mLongitudeTv = view.findViewById(R.id.longitude);
 
         mLatitudeTv = view.findViewById(R.id.latitude);
 
-        mLocManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
-
-        mProvider = mLocManager.getBestProvider(new Criteria(), false);
+        mLocationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
+        assert mLocationManager != null;
+        mBestProvider = mLocationManager.getBestProvider(new Criteria(), false);
 
         mGoogleApiClient = new GoogleApiClient.Builder(Objects.requireNonNull(getActivity()))
                 .addConnectionCallbacks(this)
@@ -121,14 +113,13 @@ public class LocationFragment extends Fragment implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
-//                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
+                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
 //                mdToast.show();
                 // Fab goes to Location Activity
-                Intent intent = new Intent(this.getActivity(), PathSenseActivity.class);
+                Intent intent = new Intent(this.getActivity(), SpeedActivity.class);
                 startActivity(intent);
                 break;
         }
-
     }
 
     /*Ending the updates for the location service*/
@@ -140,21 +131,19 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-       getUserLocation();
+        getUserLocation();
     }
 
     private void getUserLocation() {
-        
-        // Check if permissions are granted first
-        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), 
-                android.Manifest.permission.ACCESS_FINE_LOCATION)  == PackageManager.PERMISSION_GRANTED) {
-       
-            /*Getting the location after aquiring location service*/
 
+        // Check if permissions are granted first
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            /*Getting the location after aquiring location service*/
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
             if (mLastLocation != null) {
-
                 mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
                 mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
 
@@ -168,11 +157,8 @@ public class LocationFragment extends Fragment implements
 
                 if (!mGoogleApiClient.isConnected())
                     mGoogleApiClient.connect();
-
-//                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, TransportFragment.this);
             }
-        }
-        else {
+        } else {
             MainActivity mainActivity = new MainActivity();
             mainActivity.checkLocationPermission();
         }
@@ -180,7 +166,11 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Toast.makeText(getActivity(), "Connection Suspended!", Toast.LENGTH_SHORT).show();
+        String title = getResources().getString(R.string.error);
+        String message = getResources().getString(R.string.connection_lost);
+        String dismiss = getResources().getString(R.string.dialog_dismiss);
+        // Show dialog
+        DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
     }
 
     @Override
@@ -191,32 +181,68 @@ public class LocationFragment extends Fragment implements
                 // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(getActivity(), 9000);
             } catch (IntentSender.SendIntentException e) {
+                String title = getResources().getString(R.string.information_title);
+                String message = getResources().getString(R.string.no_connection);
+                String dismiss = getResources().getString(R.string.dialog_dismiss);
+
+                // Show dialog
+                DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
                 e.printStackTrace();
             }
         } else {
-            Log.e(TAG, "**************** Location services connection failed with code " + connectionResult.getErrorCode());
+            // Connection error not resolvable
+            String title = getResources().getString(R.string.error);
+            String message = getResources().getString(R.string.unknown);
+            String dismiss = getResources().getString(R.string.dialog_dismiss);
+
+            // Show dialog
+            DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
-        mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
+        mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(location.getLatitude())));
+        mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(location.getLongitude())));
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
+        /* This is called when the GPS status alters */
+        switch (status) {
+            case LocationProvider.OUT_OF_SERVICE:
+                Log.e(TAG, "****************Status Changed: Out of Service");
+                Toast.makeText(getContext(), "Status Changed: Out of Service",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                Log.e(TAG, "*************Status Changed: Temporarily Unavailable");
+                Toast.makeText(getContext(), "Status Changed: Temporarily Unavailable",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            case LocationProvider.AVAILABLE:
+                Log.v(TAG, "***********Status Changed: Available");
+                Toast.makeText(getContext(), "Status Changed: Available",
+                        Toast.LENGTH_SHORT).show();
+                getUserLocation();
+                break;
+        }
+
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        getUserLocation();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        String title = getResources().getString(R.string.information_title);
+        String message = getResources().getString(R.string.turn_on_gps);
+        String dismiss = getResources().getString(R.string.dialog_dismiss);
 
+        // Show dialog
+        DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
     }
 }

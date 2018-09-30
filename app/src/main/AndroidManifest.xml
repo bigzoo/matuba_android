@@ -22,13 +22,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".activities.PathSenseActivity">
+        <activity android:name=".activities.PathSenseActivity"></activity>
 
-        </activity>
-
-        <receiver android:name=".ActivityReceiver" />
+        <receiver android:name=".receivers.ActivityReceiver" />
 
         <!-- You need to acquire these from their website (http://developer.pathsense.com) -->
         <meta-data
@@ -37,6 +34,8 @@
         <meta-data
             android:name="com.pathsense.android.sdk.API_KEY"
             android:value="fTz298Td5cVlkOLvoyrz7EoLY9mQfpl9V2vpmxH8" />
+
+        <activity android:name=".activities.SpeedActivity"></activity>
     </application>
 
 </manifest>
