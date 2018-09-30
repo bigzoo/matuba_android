@@ -25,7 +25,6 @@ public class PathSenseActivity extends AppCompatActivity {
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
     private FrameLayout mProgressBar;
-    private PointerSpeedometer speedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +59,7 @@ public class PathSenseActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
                     textView.setText("You are " + detectedActivity);
-                    speedometer = findViewById(R.id.speedView);
-                    // move to 50 Km/h
-                    speedometer.speedTo(160, 4000);
-                    speedometer.setSpeedTextPosition(PointerSpeedometer.Position.BOTTOM_CENTER);
-                    speedometer.setLowSpeedPercent(25);
-                    speedometer.setMediumSpeedPercent(75);
-                }
+                    }
             }
         };
 
