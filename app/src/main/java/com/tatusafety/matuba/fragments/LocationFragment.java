@@ -59,6 +59,7 @@ public class LocationFragment extends Fragment implements
     private LocationRequest mLocationRequest;
     PathSenseActivity pathSenseActivity;
     private String mBestProvider;
+    private String mDismiss = "dimiss";
 
     public LocationFragment() {
     }
@@ -113,9 +114,8 @@ public class LocationFragment extends Fragment implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab:
-                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()), "Searching....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
-//                mdToast.show();
-                // Fab goes to Location Activity
+                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()), "Speeding....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
+                mdToast.show();
                 Intent intent = new Intent(this.getActivity(), SpeedActivity.class);
                 startActivity(intent);
                 break;
@@ -136,8 +136,9 @@ public class LocationFragment extends Fragment implements
 
     private void getUserLocation() {
 
+        if(isAdded())
         // Check if permissions are granted first
-        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
+        if (ActivityCompat.checkSelfPermission((Objects.requireNonNull(getActivity())),
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             /*Getting the location after aquiring location service*/
@@ -153,7 +154,8 @@ public class LocationFragment extends Fragment implements
                  * So we will get the current location.
                  * For this we'll implement Location Listener and override onLocationChanged */
 
-                Log.e(TAG, "****************No data for location found");
+                Log.e(TAG, "**************** No data for location found");
+                mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
 
                 if (!mGoogleApiClient.isConnected())
                     mGoogleApiClient.connect();
@@ -168,9 +170,8 @@ public class LocationFragment extends Fragment implements
     public void onConnectionSuspended(int i) {
         String title = getResources().getString(R.string.error);
         String message = getResources().getString(R.string.connection_lost);
-        String dismiss = getResources().getString(R.string.dialog_dismiss);
         // Show dialog
-        DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
+        DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
     }
 
     @Override
@@ -183,20 +184,18 @@ public class LocationFragment extends Fragment implements
             } catch (IntentSender.SendIntentException e) {
                 String title = getResources().getString(R.string.information_title);
                 String message = getResources().getString(R.string.no_connection);
-                String dismiss = getResources().getString(R.string.dialog_dismiss);
 
                 // Show dialog
-                DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
+                DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
                 e.printStackTrace();
             }
         } else {
             // Connection error not resolvable
             String title = getResources().getString(R.string.error);
             String message = getResources().getString(R.string.unknown);
-            String dismiss = getResources().getString(R.string.dialog_dismiss);
 
             // Show dialog
-            DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
+            DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
         }
     }
 
@@ -208,27 +207,27 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        String title = getResources().getString(R.string.error);
         /* This is called when the GPS status alters */
         switch (status) {
             case LocationProvider.OUT_OF_SERVICE:
-                Log.e(TAG, "****************Status Changed: Out of Service");
-                Toast.makeText(getContext(), "Status Changed: Out of Service",
-                        Toast.LENGTH_SHORT).show();
+                String message = getResources().getString(R.string.out_of_service);
+                // Show dialog
+                DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
                 break;
             case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                Log.e(TAG, "*************Status Changed: Temporarily Unavailable");
-                Toast.makeText(getContext(), "Status Changed: Temporarily Unavailable",
-                        Toast.LENGTH_SHORT).show();
+                String message2 = getResources().getString(R.string.connection_lost);
+                Log.e(TAG, "***************** location provider temporary unv");
+
+                // Show dialog
+//                DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message2);
                 break;
+
             case LocationProvider.AVAILABLE:
-                Log.v(TAG, "***********Status Changed: Available");
-                Toast.makeText(getContext(), "Status Changed: Available",
-                        Toast.LENGTH_SHORT).show();
-                getUserLocation();
+                mGoogleApiClient.connect();
+                onLocationChanged(null);
                 break;
         }
-
     }
 
     @Override
@@ -242,7 +241,9 @@ public class LocationFragment extends Fragment implements
         String message = getResources().getString(R.string.turn_on_gps);
         String dismiss = getResources().getString(R.string.dialog_dismiss);
 
+        // TODO: 30-Sep-18 add an intent to go to setting with a different dialog
+
         // Show dialog
-        DismissOnlyAlertDialog.showCustomDialog(getContext(), dismiss, title, message);
+        DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), dismiss, title, message);
     }
 }

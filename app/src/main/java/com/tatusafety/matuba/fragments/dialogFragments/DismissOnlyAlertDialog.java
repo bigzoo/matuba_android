@@ -1,5 +1,6 @@
 package com.tatusafety.matuba.fragments.dialogFragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -28,7 +29,8 @@ public class DismissOnlyAlertDialog extends Dialog {
     /**
      * Method to display dialog when error is found
      */
-    public static DismissOnlyAlertDialog showCustomDialog(Context context, String action, String title, String content) {
+    public static DismissOnlyAlertDialog showCustomDialog(Context context, Activity activity, String action, String title, String content) {
+
         final DismissOnlyAlertDialog mDialog = new DismissOnlyAlertDialog(context);
 
         // use custom background for the dialog
@@ -36,7 +38,6 @@ public class DismissOnlyAlertDialog extends Dialog {
         Objects.requireNonNull(mDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mDialog.setContentView(R.layout.dismiss_only_custom_dialog);
         mDialog.setCanceledOnTouchOutside(false);
-
 
         // get title and content views
         TextView titleTextView = mDialog.findViewById(R.id.dialog_title);
@@ -56,6 +57,7 @@ public class DismissOnlyAlertDialog extends Dialog {
             }
         });
 
+        if(!activity.isDestroyed() && !activity.isFinishing())
         mDialog.show();
         return mDialog;
     }

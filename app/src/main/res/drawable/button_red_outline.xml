@@ -23,8 +23,10 @@
                 android:bottomLeftRadius="4dp"
                 android:topRightRadius="4dp"
                 android:bottomRightRadius="4dp" />
-            <solid android:color="@color/lighBlue" />
-
+            <solid android:color="@color/colorPrimary" />
+            <stroke
+                android:color="@color/colorWhite"
+                android:width="2dp" />
         </shape>
     </item>
 </selector>

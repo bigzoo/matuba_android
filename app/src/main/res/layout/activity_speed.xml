@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp"
+    android:backgroundTint="@color/lightRed"
     app:cardCornerRadius="10dp"
-    android:background="@drawable/background"
     tools:context=".activities.SpeedActivity">
 
     <android.support.constraint.ConstraintLayout
@@ -34,6 +34,13 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent=".30" />
 
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline_middle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".23" />
+
         <TextView
             android:id="@+id/speedTv"
             android:layout_width="wrap_content"
@@ -43,16 +50,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="50km/h" />
 
-        <com.github.anastr.speedviewlib.PointerSpeedometer
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:layout_height="wrap_content"
+            android:text="Remember to observe speed limits"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_right"
+            app:layout_constraintStart_toEndOf="@id/guideline_left"
+            app:layout_constraintTop_toTopOf="@id/guideline_middle" />
+
+        <com.github.anastr.speedviewlib.TubeSpeedometer
             android:id="@+id/speedView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintEnd_toStartOf="@id/guideline_right"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
             app:layout_constraintTop_toBottomOf="@id/guideline_top"
-            app:sv_backgroundCircleColor="@color/lighBlue"
+            app:sv_backgroundCircleColor="@color/lightRed"
             app:sv_highSpeedColor="@color/colorWarning"
-            app:sv_maxSpeed="180"
+            app:sv_maxSpeed="200"
             app:sv_minSpeed="0"
             app:sv_pointerColor="@color/colorWhite" />
 
