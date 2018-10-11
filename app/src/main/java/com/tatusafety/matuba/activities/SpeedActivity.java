@@ -87,6 +87,7 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
         speedometer.setLowSpeedPercent(25);
         speedometer.setMediumSpeedPercent(75);
         speedometer.setSpeedometerColor(getResources().getColor(R.color.colorWhite));
+        DismissOnlyAlertDialog.showCustomDialog(getApplicationContext(),this,getResources().getString(R.string.dialog_dismiss),"Message","Title");
     }
 
     // When there is a change in speed , this method is called
