@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +19,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +39,9 @@ import com.tatusafety.matuba.activities.SpeedActivity;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -50,7 +56,6 @@ public class LocationFragment extends Fragment implements
     private String TAG = getClass().getSimpleName();
 
     private TextView mLatitudeTv, mLongitudeTv;
-    double latitude, longitude;
     private GoogleApiClient mGoogleApiClient;
     LocationManager mLocationManager;
 
@@ -60,6 +65,7 @@ public class LocationFragment extends Fragment implements
     PathSenseActivity pathSenseActivity;
     private String mBestProvider;
     private String mDismiss = "dimiss";
+    private EditText whereToEditText;
 
     public LocationFragment() {
     }
@@ -85,16 +91,12 @@ public class LocationFragment extends Fragment implements
 
         final String TAG = this.getClass().getSimpleName();
 
-        EditText whereToEditText = view.findViewById(R.id.whereTo_et);
+        whereToEditText = view.findViewById(R.id.whereTo_et);
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
 
         fab.setOnClickListener(this);
         pathSenseActivity = new PathSenseActivity();
-
-        mLongitudeTv = view.findViewById(R.id.longitude);
-
-        mLatitudeTv = view.findViewById(R.id.latitude);
 
         mLocationManager = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(Context.LOCATION_SERVICE);
         assert mLocationManager != null;
@@ -136,34 +138,57 @@ public class LocationFragment extends Fragment implements
 
     private void getUserLocation() {
 
-        if(isAdded())
-        // Check if permissions are granted first
-        if (ActivityCompat.checkSelfPermission((Objects.requireNonNull(getActivity())),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (isAdded())
+            // Check if permissions are granted first
+            if (ActivityCompat.checkSelfPermission((Objects.requireNonNull(getActivity())),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            /*Getting the location after aquiring location service*/
-            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                /*Getting the location after aquiring location service*/
+                Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-            if (mLastLocation != null) {
-                mLatitudeTv.setText(String.format("%s%s", getString(R.string.Latitude), String.valueOf(mLastLocation.getLatitude())));
-                mLongitudeTv.setText(String.format("%s%s", getString(R.string.Longitude), String.valueOf(mLastLocation.getLongitude())));
+                if (mLastLocation != null) {
+                    reverseGeoCode(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                } else {
 
+                    /*if there is no last known location. Which means the device has no data for the location currently.
+                     * So we will get the current location.
+                     * For this we'll implement Location Listener and override onLocationChanged */
+
+                    mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
+
+                    if (!mGoogleApiClient.isConnected())
+                        mGoogleApiClient.connect();
+                }
             } else {
-
-                /*if there is no last known location. Which means the device has no data for the location currently.
-                 * So we will get the current location.
-                 * For this we'll implement Location Listener and override onLocationChanged */
-
-                Log.e(TAG, "**************** No data for location found");
-                mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
-
-                if (!mGoogleApiClient.isConnected())
-                    mGoogleApiClient.connect();
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.checkLocationPermission();
             }
-        } else {
-            MainActivity mainActivity = new MainActivity();
-            mainActivity.checkLocationPermission();
+    }
+
+    private void reverseGeoCode(Double latitude, Double longitude) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
+
+        try {
+            // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+            // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String address = addresses.get(0).getAddressLine(0);
+
+            // Only if available else return NULL
+            String knownName = addresses.get(0).getFeatureName();
+            if (!TextUtils.isEmpty(knownName)) {
+                whereToEditText.setText(knownName);
+            } else
+                whereToEditText.setText(address);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -171,7 +196,7 @@ public class LocationFragment extends Fragment implements
         String title = getResources().getString(R.string.error);
         String message = getResources().getString(R.string.connection_lost);
         // Show dialog
-        DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
+        DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
     }
 
     @Override
@@ -186,7 +211,7 @@ public class LocationFragment extends Fragment implements
                 String message = getResources().getString(R.string.no_connection);
 
                 // Show dialog
-                DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
+                DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
                 e.printStackTrace();
             }
         } else {
@@ -195,7 +220,7 @@ public class LocationFragment extends Fragment implements
             String message = getResources().getString(R.string.unknown);
 
             // Show dialog
-            DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), mDismiss, title, message);
+            DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
         }
     }
 
@@ -244,6 +269,6 @@ public class LocationFragment extends Fragment implements
         // TODO: 30-Sep-18 add an intent to go to setting with a different dialog
 
         // Show dialog
-        DismissOnlyAlertDialog.showCustomDialog(getContext(),getActivity(), dismiss, title, message);
+        DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), dismiss, title, message);
     }
 }

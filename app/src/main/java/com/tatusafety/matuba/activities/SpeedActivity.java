@@ -87,7 +87,6 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
         speedometer.setLowSpeedPercent(25);
         speedometer.setMediumSpeedPercent(75);
         speedometer.setSpeedometerColor(getResources().getColor(R.color.colorWhite));
-        DismissOnlyAlertDialog.showCustomDialog(getApplicationContext(),this,getResources().getString(R.string.dialog_dismiss),"Message","Title");
     }
 
     // When there is a change in speed , this method is called
@@ -130,7 +129,7 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
                 String message2 = getResources().getString(R.string.connection_lost);
 
                 // Show dialog
-//                DismissOnlyAlertDialog.showCustomDialog(this, this, mDismiss, title, message2);
+                DismissOnlyAlertDialog.showCustomDialog(this, this, mDismiss, title, message2);
                 break;
 
             case LocationProvider.AVAILABLE:
