@@ -17,7 +17,6 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -32,7 +31,7 @@ import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 
 import java.util.List;
 
-public class SpamActivity extends AppCompatActivity implements View.OnClickListener {
+public class SpamActivity extends _BaseActivity implements View.OnClickListener {
     private static final int RESULT_PICK_CONTACT = 100;
     private EditText mPhoneNumber, mMessage, mNumberOfMessages;
     private int sim2, sim1;
@@ -42,6 +41,7 @@ public class SpamActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spam);
 
+        setupToolBar(true, "Spam");
         mPhoneNumber = findViewById(R.id.editTextNumber);
         mMessage = findViewById(R.id.editTextMessage);
         mNumberOfMessages = findViewById(R.id.editTextTimes);

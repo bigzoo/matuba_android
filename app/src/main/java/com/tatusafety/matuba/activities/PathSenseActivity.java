@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -17,7 +16,7 @@ import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.receivers.ActivityReceiver;
 
-public class PathSenseActivity extends AppCompatActivity {
+public class PathSenseActivity extends _BaseActivity {
 
     private String TAG;
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
@@ -29,6 +28,8 @@ public class PathSenseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_sense_activity);
+
+        setupToolBar(true, "Activity Recognition");
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
 

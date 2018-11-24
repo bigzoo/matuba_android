@@ -21,7 +21,7 @@ import com.tatusafety.matuba.fragments.LocationFragment;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends _BaseActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private LocationFragment mLocationFragment;
@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setupToolBar(false,"Matuba");
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
