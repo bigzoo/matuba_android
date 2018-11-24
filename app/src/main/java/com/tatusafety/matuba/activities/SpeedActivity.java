@@ -10,12 +10,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -42,7 +42,6 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient mGoogleApiClient;
     private String mBestProvider;
     private TextView speedTv;
-    LocationListener locationListener;
     private String TAG = getClass().getSimpleName();
     private String mDismiss = "Dismiss";
 
@@ -55,6 +54,7 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
         initSpeedometer();
 
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
         // Device will determine the best provider between the GPS provider and Network provider
         mBestProvider = mLocationManager.getBestProvider(new Criteria(), false);
 
@@ -76,6 +76,7 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
             // check if there is a connection
             mGoogleApiClient.connect();
         }
+
         // Set up the location listener
         this.onLocationChanged(null);
     }
@@ -101,10 +102,12 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
 
             speedometer.speedTo((float) speedInKmh, 4000);
 
-            if (speedInKmh >= 80) {
+            // set the text to let the user now to slow down if they are speeding
+            if (speedInKmh < 80) {
+                speedTv.setText(R.string.observe_speed_limits);
+            } else if (speedInKmh >= 80) {
                 speedTv.setText(R.string.slow_down);
-            }
-            if (speedInKmh >= 120) {
+            } else if (speedInKmh >= 120) {
                 speedTv.setText(R.string.slow_down_more);
             }
         }
@@ -157,12 +160,7 @@ public class SpeedActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onConnectionSuspended(int i) {
-        String title = getResources().getString(R.string.information_title);
-        String message = getResources().getString(R.string.connection_lost);
-        Log.e(TAG, "***************** connection suspended");
 
-        // Show dialog
-        DismissOnlyAlertDialog.showCustomDialog(this, this, mDismiss, title, message);
     }
 
     @Override

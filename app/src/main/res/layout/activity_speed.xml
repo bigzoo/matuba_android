@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:textColor="@color/colorWhite"
             android:layout_height="wrap_content"
-            android:text="Remember to observe speed limits"
+            android:text="@string/observe_speed_limits"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@id/guideline_right"
             app:layout_constraintStart_toEndOf="@id/guideline_left"
