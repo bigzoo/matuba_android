@@ -72,6 +72,39 @@
 
     </android.support.v7.widget.CardView>
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@id/guideline_right"
+        app:layout_constraintStart_toEndOf="@id/guideline_left"
+        app:layout_constraintTop_toBottomOf="@id/card_view">
+
+        <Button
+            android:id="@+id/speed_activity_btn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:background="@drawable/button_red_outline"
+            android:backgroundTint="@color/colorWhite"
+            android:text="How fast am I going "
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/spam_activity_btn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_weight="2"
+            android:background="@drawable/button_red_outline"
+            android:backgroundTint="@color/colorWhite"
+            android:text="Spam sms"
+            android:textAllCaps="false" />
+
+
+    </LinearLayout>
+
+
     <!--floating action button-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabulous"
