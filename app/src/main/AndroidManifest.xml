@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +18,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBlrSbijyXprNA82rsAN1mnwWT_Jrab9MA" />
 
         <activity android:name=".activities.MainActivity">
             <intent-filter>
@@ -22,13 +28,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".activities.PathSenseActivity">
+        <activity android:name=".activities.PathSenseActivity" />
 
-        </activity>
-
-        <receiver android:name=".ActivityReceiver" />
+        <receiver android:name=".receivers.ActivityReceiver" />
 
         <!-- You need to acquire these from their website (http://developer.pathsense.com) -->
         <meta-data
@@ -37,6 +40,9 @@
         <meta-data
             android:name="com.pathsense.android.sdk.API_KEY"
             android:value="fTz298Td5cVlkOLvoyrz7EoLY9mQfpl9V2vpmxH8" />
+
+        <activity android:name=".activities.SpeedActivity" />
+        <activity android:name=".activities.SpamActivity"></activity>
     </application>
 
 </manifest>

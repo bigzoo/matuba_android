@@ -5,26 +5,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.pathsense.android.sdk.location.PathsenseDetectedActivities;
 import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
-import com.tatusafety.matuba.ActivityReceiver;
 import com.tatusafety.matuba.R;
+import com.tatusafety.matuba.receivers.ActivityReceiver;
 
-public class PathSenseActivity extends AppCompatActivity  {
+public class PathSenseActivity extends AppCompatActivity {
 
     private String TAG;
-
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
@@ -33,7 +28,7 @@ public class PathSenseActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.transport_fragment);
+        setContentView(R.layout.path_sense_activity);
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
 
@@ -63,12 +58,11 @@ public class PathSenseActivity extends AppCompatActivity  {
                 if (detectedActivities != null) {
                     mProgressBar.setVisibility(View.GONE);
                     String detectedActivity = detectedActivities.getMostProbableActivity().getDetectedActivity().name();
-                    textView.setText("You are "  + detectedActivity.toLowerCase());
+                    textView.setText("You are " + detectedActivity.toLowerCase());
                 }
             }
         };
     }
-
 
     @Override
     protected void onResume() {
@@ -87,11 +81,18 @@ public class PathSenseActivity extends AppCompatActivity  {
     @Override
     protected void onPause() {
         super.onPause();
+        removeReceiver();
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        removeReceiver();
+    }
+
+    private void removeReceiver() {
         pathsenseLocationProviderApi.removeActivityUpdates();
-
-//        pathsenseLocationProviderApi.removeActivityChanges();
-
+        pathsenseLocationProviderApi.removeActivityChanges();
         //Unregister local receiver
         localBroadcastManager.unregisterReceiver(localActivityReceiver);
     }
