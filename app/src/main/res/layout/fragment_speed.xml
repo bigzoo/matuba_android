@@ -70,6 +70,7 @@
             app:sv_highSpeedColor="@color/colorWarning"
             app:sv_maxSpeed="200"
             app:sv_minSpeed="0"
+            app:sv_speedometerBackColor="@android:color/transparent"
             app:sv_pointerColor="@color/colorWhite" />
 
     </android.support.constraint.ConstraintLayout>
