@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,15 +34,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.activities.MainActivity;
 import com.tatusafety.matuba.activities.PathSenseActivity;
 import com.tatusafety.matuba.activities.SpamActivity;
-import com.tatusafety.matuba.activities.SpeedActivity;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
@@ -49,6 +49,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Kilasi on 4/7/2018.
@@ -62,12 +65,17 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
 
     PathSenseActivity pathSenseActivity;
     private String mBestProvider;
-    private EditText whereToEditText;
+    @BindView(R.id.whereTo_et)
+    EditText whereToEditText;
+    @BindView(R.id.speed_activity_btn)
+    Button mSpeed;
+    @BindView(R.id.spam_activity_btn)
+    Button mSpam;
 
     public LocationFragment() {
     }
 
-    public static LocationFragment newInstance(boolean permissionGranted) {
+    public static LocationFragment newInstance() {
         return new LocationFragment();
     }
 
@@ -79,17 +87,22 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final String TAG = this.getClass().getSimpleName();
+        ButterKnife.bind(this, view);
 
-        whereToEditText = view.findViewById(R.id.whereTo_et);
-        Button mSpeed = view.findViewById(R.id.speed_activity_btn);
-        Button mSpam = view.findViewById(R.id.spam_activity_btn);
-
-        if (getActivity() != null) {
-            PlaceAutocompleteFragment autocompleteFragment =
-                    (PlaceAutocompleteFragment) getActivity()
-                            .getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_location);
-            setUpAutoComplete(autocompleteFragment);
+        SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
+        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = null;
+        if (fm != null) {
+            ft = fm.beginTransaction();
         }
+        if (ft != null) {
+            ft.replace(R.id.place_autocomplete_fragment, autocompleteFragment);
+        }
+        if (ft != null) {
+            ft.commit();
+        }
+        setUpAutoComplete(autocompleteFragment);
+
 
         FloatingActionButton fab = view.findViewById(R.id.fabulous);
         fab.setOnClickListener(this);
@@ -111,14 +124,12 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
                 .build();
 
         mGoogleApiClient.connect();
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fabulous:
-
-                break;
             case R.id.spam_activity_btn:
                 MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()),
                         "Preparing to spam....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
@@ -130,7 +141,7 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
                 mdToast = MDToast.makeText(Objects.requireNonNull(getContext()),
                         "Speeding....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
                 mdToast.show();
-                Intent intent1 = new Intent(this.getActivity(), SpeedActivity.class);
+                Intent intent1 = new Intent(this.getActivity(), SpeedFragment.class);
                 startActivity(intent1);
                 break;
         }
@@ -205,15 +216,13 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private void setUpAutoComplete(PlaceAutocompleteFragment autocompleteFragment) {
+    private void setUpAutoComplete(SupportPlaceAutocompleteFragment autocompleteFragment) {
 
         if (autocompleteFragment != null) {
 
             // Bind between Kenya and Nairobi
             autocompleteFragment.setBoundsBias(new LatLngBounds(new LatLng(0.0236, 37.9062),
                     new LatLng(1.2921, 36.8219)));
-
-            autocompleteFragment.setHint(getString(R.string.going_to_hint));
 
             // only display seach results from Kenya and address
             AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()

@@ -5,7 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_blue">
+    android:background="@drawable/red_orange_gradient">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_left"
@@ -26,7 +26,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/white_background"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toStartOf="@id/guideline_right"
         app:layout_constraintStart_toEndOf="@id/guideline_left"
@@ -60,9 +59,8 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <fragment
-                android:id="@+id/place_autocomplete_fragment_location"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            <FrameLayout
+                android:id="@+id/place_autocomplete_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/whereTo_et"
@@ -109,11 +107,12 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabulous"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="60dp"
         android:background="#21D4FD"
-        android:src="@drawable/ic_check_circle_white_24dp"
+        android:src="@drawable/places_ic_search"
         app:backgroundTint=" #21D4FD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

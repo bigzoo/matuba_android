@@ -21,6 +21,7 @@ import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,22 +32,30 @@ import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SpamActivity extends _BaseActivity implements View.OnClickListener {
     private static final int RESULT_PICK_CONTACT = 100;
-    private EditText mPhoneNumber, mMessage, mNumberOfMessages;
-    private int sim2, sim1;
+    @BindView(R.id.editTextMessage)
+    EditText mMessage;
+    @BindView(R.id.editTextNumber)
+    EditText mPhoneNumber;
+    @BindView(R.id.editTextTimes)
+    EditText mNumberOfMessages;
+
+    @BindView(R.id.select_from_contacts)
+    TextView pickFromContacts;
+    @BindView(R.id.send_button)
+    TextView sendMessage;
+    private int sim2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spam);
-
+        ButterKnife.bind(this);
         setupToolBar(true, "Spam");
-        mPhoneNumber = findViewById(R.id.editTextNumber);
-        mMessage = findViewById(R.id.editTextMessage);
-        mNumberOfMessages = findViewById(R.id.editTextTimes);
-        TextView sendMessage = findViewById(R.id.send_button);
-        TextView pickFromContacts = findViewById(R.id.select_from_contacts);
 
         sendMessage.setOnClickListener(this);
         pickFromContacts.setOnClickListener(this);
@@ -205,7 +214,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                     SubscriptionInfo simInfo2 = (SubscriptionInfo) localList.get(1);
 
                     sim2 = simInfo2.getSubscriptionId();
-                    sim1 = simInfo1.getSubscriptionId();
+                    int sim1 = simInfo1.getSubscriptionId();
                     sendWithSim(sim1, phoneNum, message, sentIntent);
                 } else {
                     getPermissions();
@@ -234,5 +243,29 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    /**
+     * onOptionsItemSelected method
+     *
+     * @param item item
+     * @return boolean
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

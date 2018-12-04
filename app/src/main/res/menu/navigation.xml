@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_base"
+        android:icon="@drawable/ic_home"
+        android:title="@string/home" />
+
+    <item
+        android:id="@+id/traffic"
+        android:icon="@drawable/ic_traffic"
+        android:title="@string/traffic" />
+    <item
+        android:id="@+id/speed"
+        android:icon="@drawable/ic_speedometer"
+        android:title="@string/speedometer" />
+</menu>

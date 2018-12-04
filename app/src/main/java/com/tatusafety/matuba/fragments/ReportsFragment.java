@@ -19,6 +19,10 @@ public class ReportsFragment extends Fragment {
 
     private TextView eta_tv, duration_tv, distance_tv, fare_tv, description_tv;
 
+    public static Fragment newInstance() {
+        return new  ReportsFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.show_directions_xml, container, false);

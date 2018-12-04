@@ -5,9 +5,13 @@
     <string name="permission_dialog_title">LOCATIONS ARE GREAT</string>
     <string name="permission_message_dialog">To enable us to give you the best user experience ever please give access to location services.We promise to put it to good use</string>
     <string name="give_permission_button_dialog">GO Ahead</string>
+
     <string name="updating_gps">GPS Updating</string>
     <string name="enabled_gps">GPS Enabled</string>
     <string name="gps_disabled">GPS Disabled</string>
+    <string name="out_of_service">Oops. You seem to be out of service.</string>
+
+    <!--Errors-->
     <string name="dialog_dismiss">Dismiss</string>
     <string name="information_title">Information</string>
     <string name="connection_lost">Oops !! Your looks like we lost the connection there . Check your internet connection and try again </string>
@@ -16,9 +20,24 @@
     <string name="turn_on_gps">Please turn on your location in the settings app to continue</string>
     <string name="error">Error</string>
     <string name="provider_disabled">Please turn on Location Services to continue</string>
-    <string name="out_of_service">Oops. You seem to be out of service.</string>
+
+    <!--speed limit strings-->
     <string name="slow_down">Drive carefully . Maybe slow down?</string>
     <string name="slow_down_more">Woah there!! Please slow down or ask teh driver to slow down</string>
-    <string name="going_to_hint">I am going to</string>
+    <string name="going_to_hint">Enter destination</string>
     <string name="observe_speed_limits">Remember to observe speed limits</string>
+
+    <!--BOTTOM NAVIGATION MENU-->
+    <array name="main_menu">
+        <item>Home</item>
+        <item>Traffic updates</item>
+        <item>Speed</item>
+    </array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="home">Home</string>
+    <string name="traffic">Traffic</string>
+    <string name="speedometer">Speedometer</string>
 </resources>

@@ -16,25 +16,26 @@ import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.receivers.ActivityReceiver;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PathSenseActivity extends _BaseActivity {
 
-    private String TAG;
+    private String TAG = getClass().getSimpleName();
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
-    private FrameLayout mProgressBar;
+    @BindView(R.id.progressBar) FrameLayout mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_sense_activity);
+        ButterKnife.bind(this);
 
         setupToolBar(true, "Activity Recognition");
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
-
-        final String TAG = this.getClass().getSimpleName();
-        mProgressBar = findViewById(R.id.progressBar);
 
         //This just gets the activity intent from the ActivityReceiver class
         accessActivityReceiver(PathSenseActivity.this);
