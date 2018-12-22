@@ -21,6 +21,7 @@ import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -31,24 +32,41 @@ import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SpamActivity extends _BaseActivity implements View.OnClickListener {
     private static final int RESULT_PICK_CONTACT = 100;
+    private final String TAG = getClass().getSimpleName();
     @BindView(R.id.editTextMessage)
-    EditText mMessage;
+    EditText mMessageEt;
     @BindView(R.id.editTextNumber)
-    EditText mPhoneNumber;
+    EditText mPhoneNumberEt;
     @BindView(R.id.editTextTimes)
-    EditText mNumberOfMessages;
-
+    EditText mNumberOfMessagesEt;
     @BindView(R.id.select_from_contacts)
     TextView pickFromContacts;
     @BindView(R.id.send_button)
-    TextView sendMessage;
-    private int sim2;
+    TextView sendMessageTv;
+    @BindView(R.id.sim_1)
+    TextView sim1Tv;
+    @BindView(R.id.sim_2)
+    TextView sim2Tv;
+    @BindView(R.id.send_interval)
+    TextView mSendInIntervalsBtn;
+    @BindView(R.id.time_interval_et)
+    EditText mIntervalsEt;
+    private Timer spammingTimer;
+    private boolean sendWithSim1 = true;
+    private boolean spamming;
+    private int messagesSent, mMessageIntevals, number;
+    private boolean sendingIntervals;
+    private String mPhoneNumber, mMessage;
+    private String noOfMessagesString;
+    private String sent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +75,12 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
         ButterKnife.bind(this);
         setupToolBar(true, "Spam");
 
-        sendMessage.setOnClickListener(this);
+        sendMessageTv.setOnClickListener(this);
         pickFromContacts.setOnClickListener(this);
+        mSendInIntervalsBtn.setOnClickListener(this);
+        sim1Tv.setOnClickListener(this);
+        sim2Tv.setOnClickListener(this);
+        getDefaultSim(null, false);
 
     }
 
@@ -92,7 +114,6 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                     RESULT_PICK_CONTACT);
         }
     }
-
 
     public void pickContact() {
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
@@ -142,47 +163,53 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
             phoneNo = cursor.getString(phoneIndex);
 
             // Set the value to the textviews
-            mPhoneNumber.setText(phoneNo);
+            mPhoneNumberEt.setText(phoneNo);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * This methosd handles sending the message
+     */
     public void sendMessage() {
         int numberOfMessages = 0;
-        final String phoneNum = mPhoneNumber.getText().toString();
-        final String message = mMessage.getText().toString();
-        String time = mNumberOfMessages.getText().toString();
+        mPhoneNumber = mPhoneNumberEt.getText().toString();
+        mMessage = mMessageEt.getText().toString();
+        noOfMessagesString = mNumberOfMessagesEt.getText().toString();
 
-        if (!TextUtils.isEmpty(time)) {
-            numberOfMessages = Integer.parseInt(time);
+        if (!TextUtils.isEmpty(noOfMessagesString)) {
+            // get the number of messages
+            numberOfMessages = Integer.parseInt(noOfMessagesString);
         }
 
-        if (!TextUtils.isEmpty(phoneNum) && !TextUtils.isEmpty(message) && numberOfMessages > 0)
+        // check if the phone number and message box and number of messages field are not empty
+        if (!TextUtils.isEmpty(mPhoneNumber) && !TextUtils.isEmpty(mMessage) && numberOfMessages > 0)
+            // init a for loop to send the messages
+            sent = "SMS_SENT";
+        final PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
+                new Intent(sent), 0);
+        if (!sendingIntervals) {
             for (int i = 0; i < numberOfMessages; i++) {
                 try {
-                    String sent = "SMS_SENT";
-                    final PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0,
-                            new Intent(sent), 0);
-
                     //---when the SMS has been sent---
                     registerReceiver(new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context arg0, Intent arg1) {
                             if (getResultCode() == Activity.RESULT_OK) {
-                                Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.makeText(getBaseContext(), "Your message was sent successfully",
                                         Toast.LENGTH_SHORT).show();
+                                mIntervalsEt.setEnabled(true);
                             } else {
-                                Toast.makeText(getBaseContext(), "SMS could not sent. Trying with sim 2",
+                                Toast.makeText(getBaseContext(), "SMS could not sent",
                                         Toast.LENGTH_SHORT).show();
-                                sendWithSim(sim2, phoneNum, message, sentIntent);
                             }
                         }
                     }, new IntentFilter(sent));
 
                     // if phone has 2 simcards, check then send with sim 1
                     // if not send anyway
-                    getDefaultSim(phoneNum, message, sentIntent);
+                    getDefaultSim(sentIntent, true);
 
                 } catch (Exception e) {
                     DismissOnlyAlertDialog.showCustomDialog(this,
@@ -191,36 +218,55 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                             e.getLocalizedMessage());
                 }
 
-                Toast.makeText(this, "Your message was sent successfully", Toast.LENGTH_SHORT).show();
             }
-    }
-
-    private void sendWithSim(int simCard, String phoneNum, String message, PendingIntent sentIntent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && simCard > 0) {
-            SmsManager.getSmsManagerForSubscriptionId(simCard).sendTextMessage(phoneNum, null, message, sentIntent, null);
+        } else {
+            if (number > 0)
+                sendWithIntervals(sentIntent);
         }
     }
 
-    private void getDefaultSim(String phoneNum, String message, PendingIntent sentIntent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+    private void sendWithSim(int simCard, PendingIntent sentIntent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1 && simCard > 0 && !TextUtils.isEmpty(mPhoneNumber) && !TextUtils.isEmpty(mMessage)) {
+            SmsManager.getSmsManagerForSubscriptionId(simCard).sendTextMessage(mPhoneNumber, null, mMessage, sentIntent, null);
+        }
+    }
 
+    private void getDefaultSim(PendingIntent sentIntent, boolean sendNow) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            Log.e(TAG, "getting default sim");
             SubscriptionManager localSubscriptionManager = SubscriptionManager.from(getApplicationContext());
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 if (localSubscriptionManager.getActiveSubscriptionInfoCount() > 1) {
+                    // User has a dual sim phone
+                    // show options for sending
+                    sim2Tv.setVisibility(View.VISIBLE);
+                    sim1Tv.setVisibility(View.VISIBLE);
+                    Log.e(TAG, "******* looking for simcards");
                     List localList = localSubscriptionManager.getActiveSubscriptionInfoList();
 
                     SubscriptionInfo simInfo1 = (SubscriptionInfo) localList.get(0);
                     SubscriptionInfo simInfo2 = (SubscriptionInfo) localList.get(1);
 
-                    sim2 = simInfo2.getSubscriptionId();
+                    int sim2 = simInfo2.getSubscriptionId();
                     int sim1 = simInfo1.getSubscriptionId();
-                    sendWithSim(sim1, phoneNum, message, sentIntent);
+                    sim1Tv.setText(simInfo1.getDisplayName());
+                    sim2Tv.setText(simInfo2.getDisplayName());
+
+                    // If the user picked sim1 send with sim 1
+                    if (sendWithSim1) {
+                        sendWithSim(sim1, sentIntent);
+                    } else {
+                        sendWithSim(sim2, sentIntent);
+                    }
                 } else {
+                    // permissions were not granted
                     getPermissions();
                 }
             } else {
-                SmsManager.getDefault().sendTextMessage(phoneNum, null, message, sentIntent, null);
+                // user does not have a dual sim . Send the message
+                if (sendNow)
+                    SmsManager.getDefault().sendTextMessage(mPhoneNumber, null, mMessage, sentIntent, null);
             }
         }
     }
@@ -230,6 +276,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.send_button:
                 if (ContextCompat.checkSelfPermission(SpamActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    // permissions were not granted
                     getPermissions();
                 } else {
                     sendMessage();
@@ -242,6 +289,62 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                     pickContact();
                 }
                 break;
+            case R.id.sim_1:
+                // if user selects sim 1 then send message with sim 1
+                sendWithSim1 = true;
+                sim1Tv.setBackgroundColor(getResources().getColor(R.color.orange));
+                sim2Tv.setBackgroundColor(getResources().getColor(R.color.lighBlue));
+                break;
+            case R.id.sim_2:
+                sendWithSim1 = false;
+                sim2Tv.setBackgroundColor(getResources().getColor(R.color.orange));
+                sim1Tv.setBackgroundColor(getResources().getColor(R.color.lighBlue));
+                break;
+            case R.id.send_interval:
+                if (!TextUtils.isEmpty(mIntervalsEt.getText().toString())) {
+                    number = Integer.parseInt(mNumberOfMessagesEt.getText().toString());
+                }
+                sendMessageTv.setEnabled(false);
+                sendingIntervals = true;
+                sendMessage();
+        }
+    }
+
+    private void sendWithIntervals(final PendingIntent pendingIntent) {
+        if (spammingTimer == null && !spamming) {
+            messagesSent = 0;
+            // get the interval
+            if (!TextUtils.isEmpty(mIntervalsEt.getText().toString())) {
+                mMessageIntevals = Integer.parseInt(mIntervalsEt.getText().toString());
+            } else {
+                mIntervalsEt.setError("Please fill this field");
+            }
+
+            spamming = true;
+            spammingTimer = new Timer();
+            spammingTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "doing runnable");
+                    getDefaultSim(pendingIntent, true);
+                    messagesSent++;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendMessageTv.setText(messagesSent + " Messages sent ");
+                            // all messages have been sent, cancel timer
+                            if (messagesSent == number) {
+                                if (spammingTimer != null && spamming) {
+                                    spammingTimer.cancel();
+                                    spammingTimer = null;
+                                    spamming = false;
+                                }
+                            }
+                        }
+                    });
+
+                }
+            }, mMessageIntevals, 300);
         }
     }
 
