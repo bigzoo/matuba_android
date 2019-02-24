@@ -13,19 +13,11 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +30,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.activities.MainActivity;
 import com.tatusafety.matuba.activities.PathSenseActivity;
@@ -50,27 +43,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * Created by Kilasi on 4/7/2018.
  */
 
-public class HomeFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class HomeFragment extends Fragment implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
     private String TAG = getClass().getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
     LocationManager mLocationManager;
-
     PathSenseActivity pathSenseActivity;
     private String mBestProvider;
-    @BindView(R.id.whereTo_et)
-    EditText whereToEditText;
-    @BindView(R.id.speed_activity_btn)
-    Button mSpeed;
-    @BindView(R.id.spam_activity_btn)
-    Button mSpam;
 
     public HomeFragment() {
     }
@@ -87,10 +80,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Goog
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final String TAG = this.getClass().getSimpleName();
-        ButterKnife.bind(this, view);
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = null;
         if (fm != null) {
             ft = fm.beginTransaction();
@@ -105,8 +97,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Goog
 
         FloatingActionButton fab = view.findViewById(R.id.fabulous);
         fab.setOnClickListener(this);
-        mSpam.setOnClickListener(this);
-        mSpeed.setOnClickListener(this);
+        //spam.setOnClickListener(this);
+        //mSpeed.setOnClickListener(this);
 
         // set up the activity recognition
         pathSenseActivity = new PathSenseActivity();
@@ -205,9 +197,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Goog
             // Use address if known name is not available
             String knownName = addresses.get(0).getFeatureName();
             if (!TextUtils.isEmpty(knownName)) {
-                whereToEditText.setText(knownName);
-            } else
-                whereToEditText.setText(address);
+                //whereToEditText.setText(knownName);
+            } else {
+                //whereToEditText.setText(address);
+            }
 
         } catch (IOException e) {
             showError(null, null);
@@ -237,7 +230,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Goog
                 public void onPlaceSelected(Place place) {
 
                     Log.e(TAG, "Place lat: " + place.getLatLng().latitude + " " + place.getLatLng().longitude);
-                    whereToEditText.setVisibility(View.VISIBLE);
+                    //whereToEditText.setVisibility(View.VISIBLE);
                 }
 
                 @Override

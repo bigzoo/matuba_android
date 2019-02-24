@@ -1,6 +1,6 @@
 package com.tatusafety.matuba.interfaces;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Interaction between Activities and it's fragments/adapters which have navigation structure

@@ -27,7 +27,7 @@
             <!--android:layout_height="match_parent"-->
             <!--android:text="Your Current Speed(km/h) is: "/>-->
         <!--  Date Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:onClick="setDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,9 +41,9 @@
                 android:hint="Date"
                 android:gravity="center"
                 />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Time Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:onClick="setTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,9 +56,9 @@
                 android:inputType="time"
                 android:hint="Tap to set the time"
                 android:gravity="center" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Road Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -70,9 +70,9 @@
                 android:hint="Enter the road name"
                 android:inputType="textCapWords"
                 android:gravity="center"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Sacco Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -84,9 +84,9 @@
                 android:hint="Enter Sacco Name e.g KBS"
                 android:gravity="center"
                 android:inputType="textCapWords" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Plates Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -98,9 +98,9 @@
                 android:hint="Enter No. plate"
                 android:gravity="center"
                 android:inputType="textCapCharacters" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- County Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -112,9 +112,9 @@
                 android:hint="Enter county e.g Nairobi"
                 android:gravity="center"
                 android:inputType="textCapWords" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Extras Label -->
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -125,9 +125,9 @@
                 android:inputType="textMultiLine"
                 android:hint="Description of the situation"
                 android:gravity="center"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Report Button -->
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSubmit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -6,16 +6,21 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.tatusafety.matuba.R
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.include_toolbar.*
 import java.util.*
 
 const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 
-class MainActivity : _BaseActivity() {
+class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
     private var mContext: Context? = null
 
@@ -23,6 +28,16 @@ class MainActivity : _BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         checkLocationPermission()
+        setSupportActionBar(toolbar)
+
+        val host: NavHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment?
+                ?: return
+
+        val navController = host.navController
+        // set up bottom navigation
+        NavigationUI.setupWithNavController(bottom_navigation, navController)
+        //NavigationUI.setupActionBarWithNavController(this, navController)
 
     }
 
@@ -76,21 +91,5 @@ class MainActivity : _BaseActivity() {
                 }
             }
         }
-    }
-
-    /**
-     * onOptionsItemSelected method
-     *
-     * @param item item
-     * @return boolean
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return super.onSupportNavigateUp()
-
     }
 }

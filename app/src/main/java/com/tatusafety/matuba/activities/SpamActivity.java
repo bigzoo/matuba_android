@@ -14,9 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -35,29 +32,22 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 
 public class SpamActivity extends _BaseActivity implements View.OnClickListener {
     private static final int RESULT_PICK_CONTACT = 100;
     private final String TAG = getClass().getSimpleName();
-    @BindView(R.id.editTextMessage)
     EditText mMessageEt;
-    @BindView(R.id.editTextNumber)
     EditText mPhoneNumberEt;
-    @BindView(R.id.editTextTimes)
     EditText mNumberOfMessagesEt;
-    @BindView(R.id.select_from_contacts)
     TextView pickFromContacts;
-    @BindView(R.id.send_button)
     TextView sendMessageTv;
-    @BindView(R.id.sim_1)
     TextView sim1Tv;
-    @BindView(R.id.sim_2)
     TextView sim2Tv;
-    @BindView(R.id.send_interval)
     TextView mSendInIntervalsBtn;
-    @BindView(R.id.time_interval_et)
     EditText mIntervalsEt;
     private Timer spammingTimer;
     private boolean sendWithSim1 = true;
@@ -72,14 +62,13 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spam);
-        ButterKnife.bind(this);
         setupToolBar(true, "Spam");
 
-        sendMessageTv.setOnClickListener(this);
-        pickFromContacts.setOnClickListener(this);
-        mSendInIntervalsBtn.setOnClickListener(this);
-        sim1Tv.setOnClickListener(this);
-        sim2Tv.setOnClickListener(this);
+//        sendMessageTv.setOnClickListener(this);
+//        pickFromContacts.setOnClickListener(this);
+//        mSendInIntervalsBtn.setOnClickListener(this);
+//        sim1Tv.setOnClickListener(this);
+//        sim2Tv.setOnClickListener(this);
         getDefaultSim(null, false);
 
     }
@@ -170,7 +159,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
     }
 
     /**
-     * This methosd handles sending the message
+     * This method handles sending the message
      */
     public void sendMessage() {
         int numberOfMessages = 0;
@@ -207,7 +196,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                         }
                     }, new IntentFilter(sent));
 
-                    // if phone has 2 simcards, check then send with sim 1
+                    // if phone has 2 sim-cards, check then send with sim 1
                     // if not send anyway
                     getDefaultSim(sentIntent, true);
 

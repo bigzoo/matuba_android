@@ -11,11 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,28 +27,28 @@ import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 
 import java.util.Objects;
 
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
-import static com.tatusafety.matuba.activities.MainActivity.MY_PERMISSIONS_REQUEST_LOCATION;
+import static com.tatusafety.matuba.activities.MainActivityKt.MY_PERMISSIONS_REQUEST_LOCATION;
 
 /**
  * Created by Kilasi 30/09/18
  * We use Location listener to request updates then update the speed we get from there to the speedometer
  */
-public class SpeedFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class SpeedFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
     LocationManager mLocationManager;
     private GoogleApiClient mGoogleApiClient;
     private String mBestProvider;
     private String TAG = getClass().getSimpleName();
-    @BindView(R.id.info)
     TextView speedTv;
-    @BindView(R.id.speedView)
     TubeSpeedometer speedometer;
-    @BindString(R.string.dismiss)
-    String mDismiss;
-
+    private String mDismiss;
 
     public SpeedFragment() {
     }
@@ -72,10 +67,10 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ButterKnife.bind(this, view);
-
         //set up the speedometer
         initSpeedometer();
+
+        mDismiss = getString(R.string.dismiss);
 
         if (getContext() != null)
             mLocationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);

@@ -40,4 +40,5 @@
     <string name="home">Home</string>
     <string name="traffic">Traffic</string>
     <string name="speedometer">Speedometer</string>
+    <string name="app_title">Matuba</string>
 </resources>

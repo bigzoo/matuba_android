@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -16,8 +15,8 @@ import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.receivers.ActivityReceiver;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 
 public class PathSenseActivity extends _BaseActivity {
 
@@ -25,14 +24,13 @@ public class PathSenseActivity extends _BaseActivity {
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
-    @BindView(R.id.progressBar) FrameLayout mProgressBar;
+    FrameLayout mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_sense_activity);
-        ButterKnife.bind(this);
-
+        mProgressBar = findViewById(R.id.progressBar);
         setupToolBar(true, "Activity Recognition");
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
