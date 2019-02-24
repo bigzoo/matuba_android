@@ -57,7 +57,7 @@ import butterknife.ButterKnife;
  * Created by Kilasi on 4/7/2018.
  */
 
-public class LocationFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private String TAG = getClass().getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
@@ -72,11 +72,11 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
     @BindView(R.id.spam_activity_btn)
     Button mSpam;
 
-    public LocationFragment() {
+    public HomeFragment() {
     }
 
-    public static LocationFragment newInstance() {
-        return new LocationFragment();
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
     }
 
     @Override
@@ -102,7 +102,6 @@ public class LocationFragment extends Fragment implements View.OnClickListener, 
             ft.commit();
         }
         setUpAutoComplete(autocompleteFragment);
-
 
         FloatingActionButton fab = view.findViewById(R.id.fabulous);
         fab.setOnClickListener(this);
