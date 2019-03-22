@@ -1,12 +1,12 @@
 package com.tatusafety.matuba.Adapters;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.tatusafety.matuba.fragments.HomeFragment;
 import com.tatusafety.matuba.fragments.ReportsFragment;
 import com.tatusafety.matuba.fragments.SummaryFragment;
-import com.tatusafety.matuba.fragments.LocationFragment;
 
 /**
  * Created by incentro on 4/7/2018.
@@ -25,7 +25,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                LocationFragment tab1 = new LocationFragment();
+                HomeFragment tab1 = new HomeFragment();
                 return tab1;
             case 1:
                 ReportsFragment tab2 = new ReportsFragment();

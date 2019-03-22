@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -17,23 +15,25 @@ import com.pathsense.android.sdk.location.PathsenseLocationProviderApi;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.receivers.ActivityReceiver;
 
-public class PathSenseActivity extends AppCompatActivity {
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-    private String TAG;
+
+public class PathSenseActivity extends _BaseActivity {
+
+    private String TAG = getClass().getSimpleName();
     private PathsenseLocationProviderApi pathsenseLocationProviderApi;
     private LocalBroadcastManager localBroadcastManager;
     private BroadcastReceiver localActivityReceiver;
-    private FrameLayout mProgressBar;
+    FrameLayout mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_sense_activity);
+        mProgressBar = findViewById(R.id.progressBar);
+        setupToolBar(true, "Activity Recognition");
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
-
-        final String TAG = this.getClass().getSimpleName();
-        mProgressBar = findViewById(R.id.progressBar);
 
         //This just gets the activity intent from the ActivityReceiver class
         accessActivityReceiver(PathSenseActivity.this);
