@@ -9,13 +9,18 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.tatusafety.matuba.R
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.include_toolbar.*
+import kotlinx.android.synthetic.main.navigation_activity.*
 import java.util.*
 
 const val MY_PERMISSIONS_REQUEST_LOCATION = 99
@@ -23,11 +28,15 @@ const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 class MainActivity : AppCompatActivity() {
     private val TAG = javaClass.simpleName
     private var mContext: Context? = null
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.navigation_activity)
+
         checkLocationPermission()
+
         setSupportActionBar(toolbar)
 
         val host: NavHostFragment = supportFragmentManager
@@ -35,17 +44,47 @@ class MainActivity : AppCompatActivity() {
                 ?: return
 
         val navController = host.navController
-        // set up bottom navigation
-        NavigationUI.setupWithNavController(bottom_navigation, navController)
-        //NavigationUI.setupActionBarWithNavController(this, navController)
+
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        val topLevelDestinationIds = setOf(R.id.home_dest, R.id.traffic, R.id.speed_dest)
+         appBarConfiguration = AppBarConfiguration(topLevelDestinationIds,drawer_layout)
+
+        //setupActionBar(navController, appBarConfiguration)
+
+        setupNavigationMenu(navController)
+
+        setupBottomNavMenu(navController)
 
     }
 
-    private fun openFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        //fragmentTransaction.replace(R.id.main_activity_frame_layout, fragment)
-        fragmentTransaction.commit()
+    // set up bottom navigation
+    private fun setupBottomNavMenu(navController: NavController) {
+        val bottomNav = bottom_navigation
+        bottomNav?.setupWithNavController(navController)
+    }
+
+    private fun setupNavigationMenu(navController: NavController) {
+        val sideNavView = nav_view
+        sideNavView?.setupWithNavController(navController)
+    }
+
+
+    //    Show a title in the ActionBar based off of the destination's label
+//    Display the Up button whenever you're not on a top-level destination
+//    Display a drawer icon (hamburger icon) when you're on a top-level destination
+    private fun setupActionBar(navController: NavController,
+                               appBarConfig: AppBarConfiguration) {
+
+//        // This allows NavigationUI to decide what label to show in the action bar
+//        // By using appBarConfig, it will also determine whether to
+//        // show the up arrow or drawer menu icon
+        setupActionBarWithNavController(navController, appBarConfig)
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
 
     fun checkLocationPermission() {
