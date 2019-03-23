@@ -40,7 +40,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.activities.PathSenseActivity;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
-import com.tatusafety.matuba.interfaces.MainActivityCallBack;
 import com.tatusafety.matuba.utils.GlobalUtils;
 
 import java.io.IOException;
@@ -52,7 +51,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
@@ -63,7 +61,7 @@ import static com.tatusafety.matuba.activities.MainActivityKt.MY_PERMISSIONS_REQ
  * Created by Kilasi on 4/7/2018.
  */
 
-public class HomeFragment extends Fragment implements View.OnClickListener,
+public class HomeFragment extends _BaseFragment implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -72,25 +70,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
     private LocationManager mLocationManager;
     private PathSenseActivity pathSenseActivity;
     private String mBestProvider;
-    private MainActivityCallBack mCallBack;
     private TextInputEditText mWhereToEditText;
     private Button mSpamBtn;
 
     public HomeFragment() {
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (getParentFragment() instanceof MainActivityCallBack) {
-            mCallBack = (MainActivityCallBack) getParentFragment();
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallBack = null;
     }
 
     @Override

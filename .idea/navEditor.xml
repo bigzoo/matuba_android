@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="117" />
-                            <option name="y" value="132" />
+                            <option name="x" value="44" />
+                            <option name="y" value="142" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -25,12 +25,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-187" />
-                            <option name="y" value="13" />
+                            <option name="x" value="-281" />
+                            <option name="y" value="18" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_home_dest_to_spamActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="next_action2">
                               <value>
                                 <LayoutPositions />

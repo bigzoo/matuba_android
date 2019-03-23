@@ -13,7 +13,6 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import com.github.anastr.speedviewlib.TubeSpeedometer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.snackbar.Snackbar;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 import com.tatusafety.matuba.utils.GlobalUtils;
@@ -36,7 +34,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import static com.tatusafety.matuba.activities.MainActivityKt.MY_PERMISSIONS_REQUEST_LOCATION;
 import static com.tatusafety.matuba.utils.GlobalUtils.locationsGiven;
@@ -45,7 +42,7 @@ import static com.tatusafety.matuba.utils.GlobalUtils.locationsGiven;
  * Created by Kilasi 30/09/18
  * We use Location listener to request updates then update the speed we get from there to the speedometer
  */
-public class SpeedFragment extends Fragment implements
+public class SpeedFragment extends _BaseFragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -175,11 +172,11 @@ public class SpeedFragment extends Fragment implements
             switch (status) {
                 case LocationProvider.OUT_OF_SERVICE:
                     String message = getResources().getString(R.string.out_of_service);
-                    showSnackBar(message);
+                    showSnackBar(message, false, mParentLayout);
 
                     break;
                 case LocationProvider.AVAILABLE:
-                    showSnackBar("location changed connecting");
+                    showSnackBar("Location services enabled", false, mParentLayout);
                     mGoogleApiClient.connect();
                     onLocationChanged(null);
                     break;
@@ -190,7 +187,7 @@ public class SpeedFragment extends Fragment implements
     // Available means that the provider has just become available
     @Override
     public void onProviderEnabled(String provider) {
-        showSnackBar("provider enabled");
+        showSnackBar(provider + " enabled", false, mParentLayout);
         if (isAdded()) mGoogleApiClient.connect();
     }
 
@@ -199,7 +196,7 @@ public class SpeedFragment extends Fragment implements
     public void onProviderDisabled(String provider) {
         if (isAdded()) {
             String message = getResources().getString(R.string.provider_disabled);
-            showSnackBar(message);
+            showSnackBar(message, true, mParentLayout);
 
         }
     }
@@ -219,7 +216,6 @@ public class SpeedFragment extends Fragment implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        showSnackBar("connected");
         if (!TextUtils.isEmpty(mBestProvider) && getContext() != null) {
             if (locationsGiven) {
                 checkLocationPermission();
@@ -231,7 +227,6 @@ public class SpeedFragment extends Fragment implements
 
     @SuppressLint("MissingPermission")
     private void requestLocationUpdates() {
-        showSnackBar("requested updates");
         if (GlobalUtils.locationsGiven)
             mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
     }
@@ -268,6 +263,8 @@ public class SpeedFragment extends Fragment implements
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
+        } else {
+            GlobalUtils.locationsGiven = true;
         }
     }
 
@@ -282,7 +279,7 @@ public class SpeedFragment extends Fragment implements
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
                         mGoogleApiClient.connect();
-                        showSnackBar("permission given");
+                        GlobalUtils.locationsGiven = true;
                     }
                 }
             }
@@ -294,14 +291,6 @@ public class SpeedFragment extends Fragment implements
     public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
-    }
-
-    private void showSnackBar(String message) {
-        Snackbar snackbar = Snackbar
-                .make(mParentLayout, message, Snackbar.LENGTH_SHORT);
-
-        //snackbar.show();
-        Log.e(TAG, "************** " + message);
     }
 
     @Override
