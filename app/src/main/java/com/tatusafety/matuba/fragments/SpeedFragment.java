@@ -232,7 +232,8 @@ public class SpeedFragment extends Fragment implements
     @SuppressLint("MissingPermission")
     private void requestLocationUpdates() {
         showSnackBar("requested updates");
-        mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
+        if (GlobalUtils.locationsGiven)
+            mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
     }
 
     private void checkLocationPermission() {

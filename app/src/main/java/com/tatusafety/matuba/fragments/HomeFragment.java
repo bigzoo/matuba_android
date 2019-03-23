@@ -1,9 +1,13 @@
 package com.tatusafety.matuba.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -35,11 +39,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.activities.PathSenseActivity;
-import com.tatusafety.matuba.activities.SpamActivity;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
 import com.tatusafety.matuba.interfaces.MainActivityCallBack;
 import com.tatusafety.matuba.utils.GlobalUtils;
-import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,10 +50,14 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
+
+import static com.tatusafety.matuba.activities.MainActivityKt.MY_PERMISSIONS_REQUEST_LOCATION;
 
 /**
  * Created by Kilasi on 4/7/2018.
@@ -94,6 +100,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        checkLocationPermission();
 
         mWhereToEditText = view.findViewById(R.id.whereTo_et);
         mSpamBtn = view.findViewById(R.id.spam_activity_btn);
@@ -138,11 +146,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.spam_activity_btn:
-
-                MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()),
-                        "Preparing to spam....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
-                mdToast.show();
-                //Navigation.createNavigateOnClickListener(R.id.action_home_dest_to_spamActivity);
                 Navigation.findNavController(v).navigate(R.id.action_home_dest_to_spamActivity);
                 break;
         }
@@ -184,8 +187,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
                     if (!mGoogleApiClient.isConnected()) mGoogleApiClient.connect();
                 }
             } else {
-                if (mCallBack != null) mCallBack.checkLocationPermissions();
-                Log.e(TAG, "******** permissions not given");
+                checkLocationPermission();
             }
     }
 
@@ -285,7 +287,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
         String title = getResources().getString(R.string.error);
 
         /* This is called when the GPS status alters */
-        String mDismiss = "dimiss";
+        String mDismiss = "dismiss";
         switch (status) {
             case LocationProvider.OUT_OF_SERVICE:
                 String message = getResources().getString(R.string.out_of_service);
@@ -331,5 +333,59 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
                 title, message);
     }
 
+    private void checkLocationPermission() {
+        if (getContext() != null && getActivity() != null &&
+                ContextCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.permission_dialog_title)
+
+                        .setMessage(R.string.permission_message_dialog)
+
+                        .setPositiveButton(R.string.give_permission_button_dialog, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(getActivity(),
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        } else {
+            GlobalUtils.locationsGiven = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && getActivity() != null) {
+                    // permission was granted
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        mGoogleApiClient.connect();
+                        GlobalUtils.locationsGiven = true;
+                    }
+                }
+            }
+        }
+    }
 
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.navigation_activity)
 
-        checkLocationPermissions()
 
         setSupportActionBar(toolbar)
 
@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
     override fun checkLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mContext != null) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG,"********* request for permissions")
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -114,6 +115,9 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
                             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                             MY_PERMISSIONS_REQUEST_LOCATION)
                 }
+            }else {
+                Log.e(TAG,"********* permissions granted")
+
             }
         }
     }
@@ -124,7 +128,10 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG,"********* permissions given")
+
                     GlobalUtils.locationsGiven = true
+
                     // permission was granted
                     ContextCompat.checkSelfPermission(Objects.requireNonNull<MainActivity>(this@MainActivity),
                             Manifest.permission.ACCESS_FINE_LOCATION)
