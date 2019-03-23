@@ -3,13 +3,15 @@ package com.tatusafety.matuba.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.core.content.ContextCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
 public class GlobalUtils {
+   public static boolean locationsGiven = false;
 
     public static Drawable getAPICompatVectorDrawable(Context callingContext, int resource_id) {
         if (android.os.Build.VERSION.SDK_INT >= 21) {
