@@ -1,9 +1,9 @@
 package com.tatusafety.matuba.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,11 +32,13 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.tatusafety.matuba.R;
-import com.tatusafety.matuba.activities.MainActivity;
 import com.tatusafety.matuba.activities.PathSenseActivity;
 import com.tatusafety.matuba.activities.SpamActivity;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
+import com.tatusafety.matuba.interfaces.MainActivityCallBack;
+import com.tatusafety.matuba.utils.GlobalUtils;
 import com.valdesekamdem.library.mdtoast.MDToast;
 
 import java.io.IOException;
@@ -45,10 +48,10 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 /**
  * Created by Kilasi on 4/7/2018.
@@ -59,17 +62,29 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
     private String TAG = getClass().getSimpleName();
-
     private GoogleApiClient mGoogleApiClient;
-    LocationManager mLocationManager;
-    PathSenseActivity pathSenseActivity;
+    private LocationManager mLocationManager;
+    private PathSenseActivity pathSenseActivity;
     private String mBestProvider;
+    private MainActivityCallBack mCallBack;
+    private TextInputEditText mWhereToEditText;
+    private Button mSpamBtn;
 
     public HomeFragment() {
     }
 
-    public static HomeFragment newInstance() {
-        return new HomeFragment();
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (getParentFragment() instanceof MainActivityCallBack) {
+            mCallBack = (MainActivityCallBack) getParentFragment();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallBack = null;
     }
 
     @Override
@@ -79,7 +94,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final String TAG = this.getClass().getSimpleName();
+
+        mWhereToEditText = view.findViewById(R.id.whereTo_et);
+        mSpamBtn = view.findViewById(R.id.spam_activity_btn);
 
         SupportPlaceAutocompleteFragment autocompleteFragment = new SupportPlaceAutocompleteFragment();
         FragmentManager fm = getFragmentManager();
@@ -97,8 +114,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
 
         FloatingActionButton fab = view.findViewById(R.id.fabulous);
         fab.setOnClickListener(this);
-        //spam.setOnClickListener(this);
-        //mSpeed.setOnClickListener(this);
+        mSpamBtn.setOnClickListener(this);
 
         // set up the activity recognition
         pathSenseActivity = new PathSenseActivity();
@@ -122,18 +138,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.spam_activity_btn:
+
                 MDToast mdToast = MDToast.makeText(Objects.requireNonNull(getContext()),
                         "Preparing to spam....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
                 mdToast.show();
-                Intent intent = new Intent(this.getActivity(), SpamActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.speed_activity_btn:
-                mdToast = MDToast.makeText(Objects.requireNonNull(getContext()),
-                        "Speeding....", MDToast.LENGTH_SHORT, MDToast.TYPE_INFO);
-                mdToast.show();
-                Intent intent1 = new Intent(this.getActivity(), SpeedFragment.class);
-                startActivity(intent1);
+                //Navigation.createNavigateOnClickListener(R.id.action_home_dest_to_spamActivity);
+                Navigation.findNavController(v).navigate(R.id.action_home_dest_to_spamActivity);
                 break;
         }
     }
@@ -150,12 +160,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
         getUserLocation();
     }
 
+    @SuppressLint("MissingPermission")
     private void getUserLocation() {
 
         if (isAdded())
             // Check if permissions are granted first
-            if (ActivityCompat.checkSelfPermission((Objects.requireNonNull(getActivity())),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (GlobalUtils.locationsGiven) {
 
                 /*Getting the location after aquiring location service*/
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -171,12 +181,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
 
                     mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
 
-                    if (!mGoogleApiClient.isConnected())
-                        mGoogleApiClient.connect();
+                    if (!mGoogleApiClient.isConnected()) mGoogleApiClient.connect();
                 }
             } else {
-                MainActivity mainActivity = new MainActivity();
-                mainActivity.checkLocationPermission();
+                if (mCallBack != null) mCallBack.checkLocationPermissions();
+                Log.e(TAG, "******** permissions not given");
             }
     }
 
@@ -197,20 +206,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
             // Use address if known name is not available
             String knownName = addresses.get(0).getFeatureName();
             if (!TextUtils.isEmpty(knownName)) {
-                //whereToEditText.setText(knownName);
+                mWhereToEditText.setText(knownName);
             } else {
-                //whereToEditText.setText(address);
+                mWhereToEditText.setText(address);
             }
 
         } catch (IOException e) {
-            showError(null, null);
+            showError("unable to geo code", "oOps something went wrong");
+
             e.printStackTrace();
         }
     }
 
     private void setUpAutoComplete(SupportPlaceAutocompleteFragment autocompleteFragment) {
 
-        if (autocompleteFragment != null) {
+        if (autocompleteFragment != null && isAdded()) {
 
             // Bind between Kenya and Nairobi
             autocompleteFragment.setBoundsBias(new LatLngBounds(new LatLng(0.0236, 37.9062),
@@ -230,7 +240,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
                 public void onPlaceSelected(Place place) {
 
                     Log.e(TAG, "Place lat: " + place.getLatLng().latitude + " " + place.getLatLng().longitude);
-                    //whereToEditText.setVisibility(View.VISIBLE);
+                    mWhereToEditText.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -320,4 +330,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,
                 getActivity(), getString(R.string.dialog_dismiss),
                 title, message);
     }
+
+
 }

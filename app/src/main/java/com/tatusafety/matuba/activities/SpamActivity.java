@@ -52,7 +52,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
     private Timer spammingTimer;
     private boolean sendWithSim1 = true;
     private boolean spamming;
-    private int messagesSent, mMessageIntevals, number;
+    private int messagesSentCount, mMessageIntevals, number;
     private boolean sendingIntervals;
     private String mPhoneNumber, mMessage;
     private String noOfMessagesString;
@@ -64,11 +64,21 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_spam);
         setupToolBar(true, "Spam");
 
-//        sendMessageTv.setOnClickListener(this);
-//        pickFromContacts.setOnClickListener(this);
-//        mSendInIntervalsBtn.setOnClickListener(this);
-//        sim1Tv.setOnClickListener(this);
-//        sim2Tv.setOnClickListener(this);
+        sendMessageTv = findViewById(R.id.send_button);
+        mSendInIntervalsBtn = findViewById(R.id.send_interval);
+        pickFromContacts = findViewById(R.id.select_from_contacts);
+        sim1Tv = findViewById(R.id.sim_1);
+        sim2Tv = findViewById(R.id.sim_2);
+        mMessageEt = findViewById(R.id.messageEt);
+        mPhoneNumberEt = findViewById(R.id.phoneNumberEt);
+        mNumberOfMessagesEt = findViewById(R.id.messageCountEt);
+        mIntervalsEt = findViewById(R.id.messageIntervalEt);
+
+        sendMessageTv.setOnClickListener(this);
+        pickFromContacts.setOnClickListener(this);
+        mSendInIntervalsBtn.setOnClickListener(this);
+        sim1Tv.setOnClickListener(this);
+        sim2Tv.setOnClickListener(this);
         getDefaultSim(null, false);
 
     }
@@ -168,6 +178,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
         noOfMessagesString = mNumberOfMessagesEt.getText().toString();
 
         if (!TextUtils.isEmpty(noOfMessagesString)) {
+
             // get the number of messages
             numberOfMessages = Integer.parseInt(noOfMessagesString);
         }
@@ -231,7 +242,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                     // show options for sending
                     sim2Tv.setVisibility(View.VISIBLE);
                     sim1Tv.setVisibility(View.VISIBLE);
-                    Log.e(TAG, "******* looking for simcards");
+
                     List localList = localSubscriptionManager.getActiveSubscriptionInfoList();
 
                     SubscriptionInfo simInfo1 = (SubscriptionInfo) localList.get(0);
@@ -301,7 +312,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
 
     private void sendWithIntervals(final PendingIntent pendingIntent) {
         if (spammingTimer == null && !spamming) {
-            messagesSent = 0;
+            messagesSentCount = 0;
             // get the interval
             if (!TextUtils.isEmpty(mIntervalsEt.getText().toString())) {
                 mMessageIntevals = Integer.parseInt(mIntervalsEt.getText().toString());
@@ -316,13 +327,14 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                 public void run() {
                     Log.e(TAG, "doing runnable");
                     getDefaultSim(pendingIntent, true);
-                    messagesSent++;
+                    messagesSentCount++;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            sendMessageTv.setText(messagesSent + " Messages sent ");
+                            sendMessageTv.setText(getString(R.string.message_sent_count, messagesSentCount));
+
                             // all messages have been sent, cancel timer
-                            if (messagesSent == number) {
+                            if (messagesSentCount == number) {
                                 if (spammingTimer != null && spamming) {
                                     spammingTimer.cancel();
                                     spammingTimer = null;
@@ -333,7 +345,7 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
                     });
 
                 }
-            }, mMessageIntevals, 300);
+            }, 300, mMessageIntevals);
         }
     }
 

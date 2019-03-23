@@ -23,7 +23,7 @@
 
     <!--speed limit strings-->
     <string name="slow_down">Drive carefully . Maybe slow down?</string>
-    <string name="slow_down_more">Woah there!! Please slow down or ask teh driver to slow down</string>
+    <string name="slow_down_more">Woah there!! Please slow down or ask the driver to slow down</string>
     <string name="going_to_hint">Enter destination</string>
     <string name="observe_speed_limits">Remember to observe speed limits</string>
 
@@ -41,4 +41,12 @@
     <string name="traffic">Traffic</string>
     <string name="speedometer">Speedometer</string>
     <string name="app_title">Matuba</string>
+    <string name="spam_sms">Spam sms</string>
+    <string name="speed_btn_text">How fast am I going</string>
+    <string name="from">I am from</string>
+    <string name="time_interval_hint">enter time interval for the messages</string>
+    <string name="message_count_hint">10 messages</string>
+    <string name="phone_number">Phone number</string>
+    <string name="message">Message</string>
+    <string name="message_sent_count">%1s Messages sent </string>
 </resources>

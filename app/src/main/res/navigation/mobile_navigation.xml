@@ -14,6 +14,14 @@
             android:id="@+id/next_action2"
             app:destination="@id/directions_dest"
             app:popUpTo="@id/home_dest" />
+        <action
+            android:id="@+id/action_home_dest_to_spamActivity"
+            app:destination="@id/spamActivity"
+            app:enterAnim="@anim/nav_default_pop_enter_anim"
+            app:exitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@+id/home_dest" />
     </fragment>
     <fragment
         android:id="@+id/speed_dest"
@@ -25,4 +33,9 @@
         android:name="com.tatusafety.matuba.fragments.ReportsFragment"
         android:label="show_directions_xml"
         tools:layout="@layout/show_directions_xml" />
+    <activity
+        android:id="@+id/spamActivity"
+        android:name="com.tatusafety.matuba.activities.SpamActivity"
+        android:label="activity_spam"
+        tools:layout="@layout/activity_spam" />
 </navigation>
