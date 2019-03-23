@@ -9,8 +9,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,13 +17,16 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.tatusafety.matuba.R
+import com.tatusafety.matuba.interfaces.MainActivityCallBack
+import com.tatusafety.matuba.utils.GlobalUtils
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kotlinx.android.synthetic.main.navigation_activity.*
 import java.util.*
 
 const val MY_PERMISSIONS_REQUEST_LOCATION = 99
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainActivityCallBack {
+
     private val TAG = javaClass.simpleName
     private var mContext: Context? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.navigation_activity)
 
-        checkLocationPermission()
+        checkLocationPermissions()
 
         setSupportActionBar(toolbar)
 
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         val topLevelDestinationIds = setOf(R.id.home_dest, R.id.traffic, R.id.speed_dest)
-         appBarConfiguration = AppBarConfiguration(topLevelDestinationIds,drawer_layout)
+        appBarConfiguration = AppBarConfiguration(topLevelDestinationIds, drawer_layout)
 
         //setupActionBar(navController, appBarConfiguration)
 
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
 
-    fun checkLocationPermission() {
+    override fun checkLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mContext != null) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    GlobalUtils.locationsGiven = true
                     // permission was granted
                     ContextCompat.checkSelfPermission(Objects.requireNonNull<MainActivity>(this@MainActivity),
                             Manifest.permission.ACCESS_FINE_LOCATION)

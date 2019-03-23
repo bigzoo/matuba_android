@@ -1,6 +1,7 @@
 package com.tatusafety.matuba.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,9 +13,11 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.PointerSpeedometer;
@@ -22,8 +25,10 @@ import com.github.anastr.speedviewlib.TubeSpeedometer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 import com.tatusafety.matuba.R;
 import com.tatusafety.matuba.fragments.dialogFragments.DismissOnlyAlertDialog;
+import com.tatusafety.matuba.utils.GlobalUtils;
 
 import java.util.Objects;
 
@@ -34,27 +39,27 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import static com.tatusafety.matuba.activities.MainActivityKt.MY_PERMISSIONS_REQUEST_LOCATION;
+import static com.tatusafety.matuba.utils.GlobalUtils.locationsGiven;
 
 /**
  * Created by Kilasi 30/09/18
  * We use Location listener to request updates then update the speed we get from there to the speedometer
  */
-public class SpeedFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+public class SpeedFragment extends Fragment implements
+        GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
-    LocationManager mLocationManager;
+
+    private String TAG = getClass().getSimpleName();
+    private LocationManager mLocationManager;
     private GoogleApiClient mGoogleApiClient;
     private String mBestProvider;
-    private String TAG = getClass().getSimpleName();
-    TextView speedTv;
-    TubeSpeedometer speedometer;
+    private TextView speedTv;
+    private TubeSpeedometer speedometer;
     private String mDismiss;
+    private RelativeLayout mParentLayout;
 
     public SpeedFragment() {
-    }
-
-    public static SpeedFragment newInstance() {
-        return new SpeedFragment();
     }
 
     @Nullable
@@ -67,6 +72,10 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        speedometer = view.findViewById(R.id.speedView);
+        speedTv = view.findViewById(R.id.speedTv);
+        mParentLayout = view.findViewById(R.id.speed_fragment_parent);
+
         //set up the speedometer
         initSpeedometer();
 
@@ -76,7 +85,7 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
             mLocationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
         // Device will determine the best provider between the GPS provider and Network provider
-        mBestProvider = mLocationManager.getBestProvider(new Criteria(), false);
+        getProvider();
 
         // We use getContext() for connectivity to internet
         // When the device has an internet connection , the onConnected method is called
@@ -87,18 +96,40 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
                 .build();
 
         // Check if we have permissions
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (locationsGiven) {
 
             // no permissions granted , request for permissions
             checkLocationPermission();
         } else {
             // check if there is a connection
             mGoogleApiClient.connect();
+
         }
 
         // Set up the location listener
         this.onLocationChanged(null);
+    }
+
+    private void getProvider() {
+        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        // use network first
+        if (isNetworkEnabled) {
+            mBestProvider = LocationManager.NETWORK_PROVIDER;
+        }
+        // if network is not available use gps
+        if (!isNetworkEnabled && isGPSEnabled) {
+            mBestProvider = LocationManager.GPS_PROVIDER;
+        }
+
+        // if no provider is available , get the best one
+        if (!isGPSEnabled && !isNetworkEnabled) {
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
+            mBestProvider = mLocationManager.getBestProvider(criteria, false);
+        }
     }
 
     private void initSpeedometer() {
@@ -118,7 +149,7 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
             double multiplier = 3.6;
             double speedInKmh = currentSpeedinMs * multiplier;
 
-            speedometer.speedTo((float) speedInKmh, 3000);
+            speedometer.speedTo((float) speedInKmh, 2000);
 
             // set the text to let the user now to slow down if they are speeding
             if (speedInKmh < 80) {
@@ -144,10 +175,11 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
             switch (status) {
                 case LocationProvider.OUT_OF_SERVICE:
                     String message = getResources().getString(R.string.out_of_service);
-                    // Show dialog
-                    DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
+                    showSnackBar(message);
+
                     break;
                 case LocationProvider.AVAILABLE:
+                    showSnackBar("location changed connecting");
                     mGoogleApiClient.connect();
                     onLocationChanged(null);
                     break;
@@ -158,19 +190,17 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
     // Available means that the provider has just become available
     @Override
     public void onProviderEnabled(String provider) {
-        if (isAdded())
-            mGoogleApiClient.connect();
+        showSnackBar("provider enabled");
+        if (isAdded()) mGoogleApiClient.connect();
     }
 
     // The user has disabled the location services on their device
     @Override
     public void onProviderDisabled(String provider) {
         if (isAdded()) {
-            String title = getResources().getString(R.string.error);
             String message = getResources().getString(R.string.provider_disabled);
+            showSnackBar(message);
 
-            // Show dialog
-            DismissOnlyAlertDialog.showCustomDialog(getContext(), getActivity(), mDismiss, title, message);
         }
     }
 
@@ -189,19 +219,23 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        showSnackBar("connected");
         if (!TextUtils.isEmpty(mBestProvider) && getContext() != null) {
-            if (ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(getContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (locationsGiven) {
                 checkLocationPermission();
             } else {
-                mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
+                requestLocationUpdates();
             }
         }
     }
 
-    public void checkLocationPermission() {
+    @SuppressLint("MissingPermission")
+    private void requestLocationUpdates() {
+        showSnackBar("requested updates");
+        mLocationManager.requestLocationUpdates(mBestProvider, 0, 0, this);
+    }
+
+    private void checkLocationPermission() {
         if (getContext() != null && getActivity() != null &&
                 ContextCompat.checkSelfPermission(getContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -247,6 +281,7 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
                         mGoogleApiClient.connect();
+                        showSnackBar("permission given");
                     }
                 }
             }
@@ -258,5 +293,19 @@ public class SpeedFragment extends Fragment implements GoogleApiClient.Connectio
     public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+    }
+
+    private void showSnackBar(String message) {
+        Snackbar snackbar = Snackbar
+                .make(mParentLayout, message, Snackbar.LENGTH_SHORT);
+
+        //snackbar.show();
+        Log.e(TAG, "************** " + message);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mGoogleApiClient.isConnected()) mGoogleApiClient.connect();
     }
 }
