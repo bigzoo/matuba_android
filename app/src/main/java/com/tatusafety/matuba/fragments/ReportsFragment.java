@@ -1,13 +1,15 @@
-package com.tatusafety.matuba;
+package com.tatusafety.matuba.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.tatusafety.matuba.R;
 
 /**
  * Created by incentro on 4/7/2018.
@@ -16,6 +18,10 @@ import android.widget.TextView;
 public class ReportsFragment extends Fragment {
 
     private TextView eta_tv, duration_tv, distance_tv, fare_tv, description_tv;
+
+    public static Fragment newInstance() {
+        return new  ReportsFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
