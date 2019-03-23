@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/speed_fragment_parent"
     android:background="@drawable/red_orange_gradient"
     tools:context=".fragments.SpeedFragment">
 

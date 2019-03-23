@@ -50,23 +50,23 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/editTextMessage"
+                android:id="@+id/messageEt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="Message"
+                android:hint="@string/message"
                 android:inputType="textPersonName"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@+id/editTextNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/phoneNumberEt" />
 
             <EditText
-                android:id="@+id/editTextNumber"
+                android:id="@+id/phoneNumberEt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="Phone number"
+                android:hint="@string/phone_number"
                 android:inputType="phone"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
@@ -74,28 +74,28 @@
                 app:layout_constraintTop_toBottomOf="@id/select_from_contacts" />
 
             <EditText
-                android:id="@+id/editTextTimes"
+                android:id="@+id/messageCountEt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="10 messages"
+                android:hint="@string/message_count_hint"
                 android:inputType="number"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@+id/editTextMessage" />
+                app:layout_constraintTop_toBottomOf="@+id/messageEt" />
 
             <EditText
-                android:id="@+id/time_interval_et"
+                android:id="@+id/messageIntervalEt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="enter time interval for the messages"
+                android:hint="@string/time_interval_hint"
                 android:inputType="number"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTimes" />
+                app:layout_constraintTop_toBottomOf="@+id/messageCountEt" />
 
             <TextView
                 android:id="@+id/send_button"
@@ -137,7 +137,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@id/sim_2"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/time_interval_et"
+                app:layout_constraintTop_toBottomOf="@id/messageIntervalEt"
                 tools:visibility="visible" />
 
             <TextView
@@ -151,7 +151,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/sim_1"
-                app:layout_constraintTop_toBottomOf="@id/time_interval_et"
+                app:layout_constraintTop_toBottomOf="@id/messageIntervalEt"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

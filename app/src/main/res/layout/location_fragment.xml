@@ -38,7 +38,6 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
-            <!--where to edit text-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/whereTo_et"
                 android:layout_width="match_parent"
@@ -48,7 +47,7 @@
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="15dp"
                 android:backgroundTint="@color/colorWhite"
-                android:hint="I am from "
+                android:hint="@string/from"
                 android:inputType="textAutoComplete"
                 android:maxLines="1"
                 android:nextFocusLeft="@id/whereTo_et"
@@ -70,40 +69,19 @@
 
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
+    <Button
+        android:id="@+id/spam_activity_btn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/button_red_outline"
+        android:backgroundTint="@color/sky_blue"
+        android:text="@string/spam_sms"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="@id/guideline_right"
         app:layout_constraintStart_toEndOf="@id/guideline_left"
-        app:layout_constraintTop_toBottomOf="@id/card_view">
+        app:layout_constraintTop_toBottomOf="@id/card_view" />
 
-        <Button
-            android:id="@+id/speed_activity_btn"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="2"
-            android:background="@drawable/button_red_outline"
-            android:backgroundTint="@color/colorWhite"
-            android:text="How fast am I going "
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/spam_activity_btn"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="20dp"
-            android:layout_weight="2"
-            android:background="@drawable/button_red_outline"
-            android:backgroundTint="@color/colorWhite"
-            android:text="Spam sms"
-            android:textAllCaps="false" />
-
-
-    </LinearLayout>
-
-
-    <!--floating action button-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabulous"
         android:layout_width="wrap_content"
@@ -113,7 +91,7 @@
         android:layout_marginBottom="60dp"
         android:background="#21D4FD"
         android:src="@drawable/places_ic_search"
-        app:backgroundTint=" #21D4FD"
+        app:backgroundTint="@color/sky_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
