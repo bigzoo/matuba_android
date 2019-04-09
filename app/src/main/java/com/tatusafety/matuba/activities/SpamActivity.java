@@ -62,7 +62,6 @@ public class SpamActivity extends _BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spam);
-        //setupToolBar(true, "Spam");
 
         sendMessageTv = findViewById(R.id.send_button);
         mSendInIntervalsBtn = findViewById(R.id.send_interval);
