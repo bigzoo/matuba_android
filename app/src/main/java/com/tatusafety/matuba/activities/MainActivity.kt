@@ -20,7 +20,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.tatusafety.matuba.R
 import com.tatusafety.matuba.interfaces.MainActivityCallBack
 import com.tatusafety.matuba.utils.GlobalUtils
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kotlinx.android.synthetic.main.navigation_activity.*
 import java.util.*
 
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.navigation_activity)
 
-
         setSupportActionBar(toolbar)
 
         val host: NavHostFragment = supportFragmentManager
@@ -51,7 +49,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
         val topLevelDestinationIds = setOf(R.id.home_dest, R.id.traffic, R.id.speed_dest)
         appBarConfiguration = AppBarConfiguration(topLevelDestinationIds, drawer_layout)
 
-        //setupActionBar(navController, appBarConfiguration)
+        setupActionBar(navController, appBarConfiguration)
 
         setupNavigationMenu(navController)
 
@@ -91,7 +89,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
     override fun checkLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && mContext != null) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG,"********* request for permissions")
+                Log.e(TAG, "********* request for permissions")
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -115,8 +113,8 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
                             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                             MY_PERMISSIONS_REQUEST_LOCATION)
                 }
-            }else {
-                Log.e(TAG,"********* permissions granted")
+            } else {
+                Log.e(TAG, "********* permissions granted")
 
             }
         }
@@ -128,7 +126,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallBack {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e(TAG,"********* permissions given")
+                    Log.e(TAG, "********* permissions given")
 
                     GlobalUtils.locationsGiven = true
 

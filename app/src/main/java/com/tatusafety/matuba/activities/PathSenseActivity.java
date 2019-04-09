@@ -31,7 +31,7 @@ public class PathSenseActivity extends _BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_sense_activity);
         mProgressBar = findViewById(R.id.progressBar);
-        setupToolBar(true, "Activity Recognition");
+        //setupToolBar(true, "Activity Recognition");
 
         pathsenseLocationProviderApi = PathsenseLocationProviderApi.getInstance(this);
 

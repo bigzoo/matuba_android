@@ -33,7 +33,7 @@ public abstract class _BaseActivity extends AppCompatActivity {
         Toolbar toolbar = setupToolBar(homeAsUpEnabled);
 
         // obtain the views of title
-        TextView titleTv = toolbar.findViewById(R.id.toolbar_title);
+        TextView titleTv = toolbar.findViewById(R.id.toolbar);
 
         if (titleTv != null) {
             // set title

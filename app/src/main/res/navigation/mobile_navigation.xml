@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/home_dest"
         android:name="com.tatusafety.matuba.fragments.HomeFragment"
-        android:label="location_fragment"
-        tools:layout="@layout/location_fragment" >
+        android:label="Matuba"
+        tools:layout="@layout/location_fragment">
         <action
             android:id="@+id/next_action2"
             app:destination="@id/directions_dest"
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/speed_dest"
         android:name="com.tatusafety.matuba.fragments.SpeedFragment"
-        android:label="fragment_speed"
+        android:label="Speed"
         tools:layout="@layout/fragment_speed" />
     <fragment
         android:id="@+id/directions_dest"
