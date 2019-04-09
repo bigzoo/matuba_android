@@ -47,6 +47,8 @@
     <string name="time_interval_hint">enter time interval for the messages</string>
     <string name="message_count_hint">10 messages</string>
     <string name="phone_number">Phone number</string>
-    <string name="message">Message</string>
+    <string name="message">Your message ...</string>
     <string name="message_sent_count">%1s Messages sent </string>
+    <string name="send_at_once">Send at once</string>
+    <string name="send_in_intervals">Send in intervals</string>
 </resources>
