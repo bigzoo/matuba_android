@@ -80,7 +80,4 @@ public class GlobalUtils {
 //            Crashlytics.logException(e);
         }
     }
-
-
->>>>>>>develop
 }
