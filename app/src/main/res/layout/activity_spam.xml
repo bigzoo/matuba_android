@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pink"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_left"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_middle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/phoneNumberEt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/round_edit_text_background"
+                android:ellipsize="end"
+                android:hint="@string/phone_number"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:paddingStart="18dp"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toStartOf="@id/guideline_left"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/select_from_contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="15dp"
+                android:src="@drawable/ic_search_black"
+                android:text="Select from contacts"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/phoneNumberEt"
+                app:layout_constraintEnd_toStartOf="@id/guideline_right"
+                app:layout_constraintTop_toTopOf="@id/phoneNumberEt" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/numberOfMessagesEt"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/round_edit_text_background"
+                android:hint="@string/message_count_hint"
+                android:inputType="number"
+                android:paddingStart="18dp"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toEndOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@+id/phoneNumberEt"
+                tools:ignore="RtlSymmetry" />
+
+            <RadioGroup
+                android:id="@+id/sendTypeRadioGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checkedButton="@id/once"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toEndOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/numberOfMessagesEt">
+
+                <RadioButton
+                    android:id="@+id/once"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:text="@string/send_at_once"
+                    android:textColor="@color/colorWhite" />
+
+                <RadioButton
+                    android:id="@+id/interval"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/send_in_intervals"
+                    android:textColor="@color/colorWhite" />
+
+            </RadioGroup>
+
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/time_interval_spinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorWhite"
+                app:layout_constraintEnd_toStartOf="@id/guideline_middle"
+                app:layout_constraintStart_toStartOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/sendTypeRadioGroup" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/messageIntervalEt"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/round_edit_text_background"
+                android:gravity="center"
+                android:hint="0"
+                android:inputType="number"
+                android:textColor="#000"
+                app:layout_constraintStart_toEndOf="@id/guideline_middle"
+                app:layout_constraintTop_toBottomOf="@id/sendTypeRadioGroup" />
+
+            <RadioGroup
+                android:id="@+id/simCardRadioGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checkedButton="@id/sim_1"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toEndOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/time_interval_spinner">
+
+                <RadioButton
+                    android:id="@+id/sim_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorWhite"
+                    tools:text="Sim 1" />
+
+                <RadioButton
+                    android:id="@+id/sim_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorWhite"
+                    tools:text="Sim 2" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/totalMessagesSentTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="70sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guideline_right"
+                app:layout_constraintStart_toStartOf="@id/guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/simCardRadioGroup"
+                tools:text="0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/messageInputEt"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/round_edit_text_background"
+        android:hint="@string/message"
+        android:inputType="text|textMultiLine"
+        android:paddingStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/send_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="10dp"
+        android:background="@android:color/transparent"
+        android:padding="5dp"
+        android:src="@drawable/ic_send_white"
+        android:text="Send at once"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/messageInputEt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/messageInputEt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

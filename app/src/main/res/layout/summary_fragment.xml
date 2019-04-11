@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
+    android:background="#fff">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="33dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:weightSum="1">
+        <TextView
+            android:id="@+id/tvLatitudeAuto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tvLongitudeAuto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--<TextView-->
+            <!--android:id="@+id/tvSpeedAuto"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="Your Current Speed(km/h) is: "/>-->
+        <!--  Date Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:onClick="setDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/tvDateView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:hint="Date"
+                android:gravity="center"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Time Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:onClick="setTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/tvTimeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:hint="Tap to set the time"
+                android:gravity="center" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Road Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/edtRoadName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter the road name"
+                android:inputType="textCapWords"
+                android:gravity="center"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Sacco Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/edtSacco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Sacco Name e.g KBS"
+                android:gravity="center"
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Plates Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/edtPlates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter No. plate"
+                android:gravity="center"
+                android:inputType="textCapCharacters" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- County Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/edtCounty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter county e.g Nairobi"
+                android:gravity="center"
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Extras Label -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/edtExtras"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:hint="Description of the situation"
+                android:gravity="center"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Report Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/background"
+            android:padding="12dp"
+            android:text="Send Report"/>
+    </LinearLayout>
+</ScrollView>
